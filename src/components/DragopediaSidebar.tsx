@@ -125,7 +125,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-[#0c1013] border-r border-[#172127] flex flex-col justify-between transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-72 sm:w-80 lg:w-80 xl:w-[340px] bg-[#0c1013] border-r border-[#172127] flex flex-col justify-between transition-transform duration-200 ease-in-out lg:translate-x-0 ${
           isOpenMobile ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -161,7 +161,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
         </div>
 
         {/* Scrollable Navigation Body */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-5 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-5 sidebar-scroll">
           {/* Primary Quick Actions (Dragopedia Style) */}
           <div className="space-y-1.5">
             <button

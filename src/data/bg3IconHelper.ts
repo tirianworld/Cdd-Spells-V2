@@ -10,6 +10,11 @@ const bg3Icons: Record<string, Bg3IconInfo> = bg3IconsData as Record<string, Bg3
 
 // Manual high-priority aliases for Baldur's Gate 3 spells
 const SPELL_TO_BG3_KEY: Record<string, string> = {
+  // Special / Homebrew & Dragopedia Sacred Spells
+  'bendiciondeastraea': 'bless',
+  'bendicionastraea': 'bless',
+  'astraeasblessing': 'bless',
+
   // Cantrips
   'firebolt': 'firebolt',
   'saetadefuego': 'firebolt',
@@ -399,8 +404,8 @@ export function getOfficialSpellIconUrl(spell: {
   bg3IconUrl?: string | null;
   iconUrl?: string | null;
 }): string {
-  // 1. If already assigned a BG3 URL
-  if (spell.bg3IconUrl && typeof spell.bg3IconUrl === 'string' && spell.bg3IconUrl.includes('bg3.wiki')) {
+  // 1. If already assigned a BG3 URL or custom icon asset
+  if (spell.bg3IconUrl && typeof spell.bg3IconUrl === 'string') {
     const sanitized = sanitizeBg3Url(spell.bg3IconUrl);
     if (sanitized) return sanitized;
   }
@@ -416,8 +421,13 @@ export function getOfficialSpellIconUrl(spell: {
   for (const cand of candidates) {
     // 2. Direct alias table
     const mappedKey = SPELL_TO_BG3_KEY[cand];
-    if (mappedKey && bg3Icons[mappedKey]) {
-      return bg3Icons[mappedKey].url;
+    if (mappedKey) {
+      if (mappedKey.startsWith('/') || mappedKey.startsWith('http')) {
+        return mappedKey;
+      }
+      if (bg3Icons[mappedKey]) {
+        return bg3Icons[mappedKey].url;
+      }
     }
 
     // 3. Direct bg3Icons lookup

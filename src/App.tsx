@@ -1012,7 +1012,7 @@ export default function App() {
       />
 
       {/* Main Workspace Area (Offset by sidebar width on large screens) */}
-      <div className="lg:pl-64 flex-1 flex flex-col min-h-screen">
+      <div className="lg:pl-80 xl:pl-[340px] flex-1 flex flex-col min-h-screen">
         {/* Top Navbar */}
         <Navbar
           currentTab={currentTab}
@@ -1030,8 +1030,8 @@ export default function App() {
           onOpenEmbedModal={() => setIsEmbedModalOpen(true)}
         />
 
-        {/* Page Content Container */}
-        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-7">
+        {/* Page Content Container - Full Screen Width */}
+        <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 xl:px-10 py-6 space-y-7">
           {/* Tab: Catalog (All Spells) or Spellbook */}
           {(currentTab === 'catalog' || currentTab === 'spellbook') && (
             <div className="space-y-7">

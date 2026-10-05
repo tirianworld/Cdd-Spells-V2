@@ -221,7 +221,7 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
 
             {/* List of spells in this section: Always BG3 Icon Grid */}
             {!isCollapsed && (
-              <div className="p-3 sm:p-5 grid grid-cols-2 min-[440px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3 sm:gap-4">
+              <div className="p-3 sm:p-5 grid grid-cols-2 min-[440px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 min-[1800px]:grid-cols-9 min-[2100px]:grid-cols-10 gap-3 sm:gap-4">
                 {section.spells.map((spell) => {
                   const isKnown = activeCharacter?.knownSpellIds.includes(spell.id) ?? false;
                   const isPrepared = activeCharacter?.preparedSpellIds.includes(spell.id) ?? false;

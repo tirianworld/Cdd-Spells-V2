@@ -31,6 +31,15 @@
 }
 
 /* Dragopedia Custom scrollbars */
+html {
+  color-scheme: dark;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1a2832 #090d10;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -44,5 +53,34 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #bafafd;
+}
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Sidebar dedicated scrollbar styling to completely prevent any white border/track */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #1c2b36 transparent;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #1c2b36;
+  border-radius: 9999px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #bafafd;
+}
+.sidebar-scroll::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 

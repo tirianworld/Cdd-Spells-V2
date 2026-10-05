@@ -1,7 +1,5 @@
 // Official D&D 5e Spellbook Catalog with full Spanish descriptions
 import { Spell } from '../types';
-import astraeaIconUrl from '../assets/images/bendicion_astraea_icon_1790321835798.jpg';
-import astraeaUserIconUrl from '../assets/images/bendicion_astraea_icon_user.png';
 
 export const ALL_SPELLS: Spell[] = [
   {
@@ -29,9 +27,9 @@ export const ALL_SPELLS: Spell[] = [
     ],
     "damageType": "Curación",
     "icon": "bendicion_astraea",
-    "iconUrl": astraeaUserIconUrl || astraeaIconUrl || "https://raw.githubusercontent.com/theworldoftirian/dragopedia/main/public/images/uploads/bendicion-de-astraea-1790323135628.png",
-    "bg3IconUrl": astraeaUserIconUrl || astraeaIconUrl || "https://raw.githubusercontent.com/theworldoftirian/dragopedia/main/public/images/uploads/bendicion-de-astraea-1790323135628.png",
-    "bg3IconName": "icono bendicion de la dama astraea.png",
+    "iconUrl": "https://bg3.wiki/w/images/c/c4/Bless_Icon.webp",
+    "bg3IconUrl": "https://bg3.wiki/w/images/c/c4/Bless_Icon.webp",
+    "bg3IconName": "Bless Icon.webp",
     "color": "#facc15",
     "version": "ambas",
     "source": "Dracopedia / Grimorio Sagrado",
