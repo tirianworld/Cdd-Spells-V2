@@ -1,0 +1,8 @@
+{
+  "name": "Remix Spellbook D\u0026D 5e - Libro de Hechizos",
+  "description": "Compendio de magia D&D 5e con estilo y paleta visual de Dracopedia (obsidiana oscura y verde menta), iconos oficiales de Baldur's Gate 3, filtros avanzados, gestor de personajes con ranuras y tarjetas imprimibles.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
