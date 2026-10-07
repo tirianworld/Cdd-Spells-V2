@@ -29,6 +29,7 @@ import {
   getLocalCustomImages,
   removeLocalCustomImage,
 } from '../services/imageService';
+import { compressImageIcon } from '../services/storageHelper';
 
 interface CustomSpellModalProps {
   onSave: (spell: Spell) => void;
@@ -122,17 +123,28 @@ export const CustomSpellModal: React.FC<CustomSpellModalProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      const customKey = `custom_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-      saveLocalCustomImage(customKey, base64);
-      setCustomGallery(getLocalCustomImages());
-      setBg3IconUrl(base64);
-      setBg3IconName(file.name);
-      setIcon(customKey);
-    };
-    reader.readAsDataURL(file);
+    compressImageIcon(file, 256, 256, 0.85)
+      .then((base64) => {
+        const customKey = `custom_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+        saveLocalCustomImage(customKey, base64);
+        setCustomGallery(getLocalCustomImages());
+        setBg3IconUrl(base64);
+        setBg3IconName(file.name);
+        setIcon(customKey);
+      })
+      .catch(() => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64 = reader.result as string;
+          const customKey = `custom_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+          saveLocalCustomImage(customKey, base64);
+          setCustomGallery(getLocalCustomImages());
+          setBg3IconUrl(base64);
+          setBg3IconName(file.name);
+          setIcon(customKey);
+        };
+        reader.readAsDataURL(file);
+      });
   };
 
   // Handle external URL submission

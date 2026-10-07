@@ -34,6 +34,15 @@ import { getSpellDamageTypes } from './data/damageTypes';
 import { getSpellTargets } from './data/spellTargets';
 import { sanitizeBg3Url } from './data/bg3IconHelper';
 import { githubService, GitHubSaveResult } from './services/githubService';
+import {
+  safeLocalStorageGet,
+  safeLocalStorageSet,
+  purgeObsoleteStorage,
+  saveSpellsToIDB,
+  loadSpellsFromIDB,
+  saveCharactersToIDB,
+  loadCharactersFromIDB,
+} from './services/storageHelper';
 import { Sparkles, BookOpen, AlertCircle, CheckCircle2, Wand2, Compass } from 'lucide-react';
 
 const STORAGE_KEYS = {
@@ -98,15 +107,18 @@ function normalizeSchool(name: string): string {
   return SCHOOL_NORM_MAP[clean] || clean;
 }
 
+// Purge obsolete and heavy legacy cache keys on initial script evaluation
+purgeObsoleteStorage();
+
 export default function App() {
   // Version and Language state
   const [version, setVersion] = useState<'2014' | '2024'>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.VERSION);
+    const saved = safeLocalStorageGet(STORAGE_KEYS.VERSION);
     return saved === '2024' ? '2024' : '2014';
   });
 
   const [language, setLanguage] = useState<'es' | 'en'>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.LANG);
+    const saved = safeLocalStorageGet(STORAGE_KEYS.LANG);
     return saved === 'en' ? 'en' : 'es';
   });
 
@@ -138,10 +150,10 @@ export default function App() {
   // Active spell being edited in modal
   const [editingSpell, setEditingSpell] = useState<Spell | null>(null);
 
-  // Master spells state (all 525 official spells + custom/edited homebrew)
+  // Master spells state (all official spells + custom/edited homebrew)
   const [spells, setSpells] = useState<Spell[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.SPELLS);
+      const saved = safeLocalStorageGet(STORAGE_KEYS.SPELLS);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -186,7 +198,7 @@ export default function App() {
   // Characters state
   const [characters, setCharacters] = useState<Character[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEYS.CHARACTERS);
+      const saved = safeLocalStorageGet(STORAGE_KEYS.CHARACTERS);
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -199,9 +211,35 @@ export default function App() {
 
   // Active Character
   const [activeCharacterId, setActiveCharacterId] = useState<string>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.ACTIVE_CHAR);
+    const saved = safeLocalStorageGet(STORAGE_KEYS.ACTIVE_CHAR);
     return saved || DEFAULT_CHARACTERS[0]?.id || 'char-1';
   });
+
+  // Hydrate custom spells and characters from IndexedDB in case localStorage hit quotas
+  useEffect(() => {
+    loadSpellsFromIDB().then((idbSpells) => {
+      if (idbSpells && idbSpells.length > 0) {
+        setSpells((prev) => {
+          const map = new Map<string, Spell>();
+          prev.forEach((s) => map.set(s.id, s));
+          let changed = false;
+          idbSpells.forEach((s) => {
+            if (!map.has(s.id) || s.isCustom || s.isEdited) {
+              map.set(s.id, { ...map.get(s.id), ...s });
+              changed = true;
+            }
+          });
+          return changed ? Array.from(map.values()) : prev;
+        });
+      }
+    });
+
+    loadCharactersFromIDB().then((idbChars) => {
+      if (idbChars && idbChars.length > 0) {
+        setCharacters((prev) => (prev.length === 0 ? idbChars : prev));
+      }
+    });
+  }, []);
 
   // Active Spell for Modal Detail
   const [activeSpellDetail, setActiveSpellDetail] = useState<Spell | null>(null);
@@ -247,26 +285,28 @@ export default function App() {
     onlyVanilla: false,
   });
 
-  // Persist State
+  // Persist State safely without crashing on quota exceeded
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.VERSION, version);
+    safeLocalStorageSet(STORAGE_KEYS.VERSION, version);
   }, [version]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.LANG, language);
+    safeLocalStorageSet(STORAGE_KEYS.LANG, language);
   }, [language]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.ACTIVE_CHAR, activeCharacterId);
+    safeLocalStorageSet(STORAGE_KEYS.ACTIVE_CHAR, activeCharacterId);
   }, [activeCharacterId]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.CHARACTERS, JSON.stringify(characters));
+    safeLocalStorageSet(STORAGE_KEYS.CHARACTERS, JSON.stringify(characters));
+    saveCharactersToIDB(characters);
   }, [characters]);
 
   useEffect(() => {
     const customAndEdited = spells.filter((s) => s.isCustom || s.isEdited);
-    localStorage.setItem(STORAGE_KEYS.SPELLS, JSON.stringify(customAndEdited));
+    safeLocalStorageSet(STORAGE_KEYS.SPELLS, JSON.stringify(customAndEdited));
+    saveSpellsToIDB(customAndEdited);
   }, [spells]);
 
   // Sincronizar automáticamente con el repositorio GitHub de la Dragopedia si está disponible

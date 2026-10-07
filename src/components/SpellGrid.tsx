@@ -251,14 +251,6 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
                             <Bookmark className="w-2.5 h-2.5" />
                           </span>
                         )}
-                        {(spell.isCustom || spell.source === 'Homebrew') && (
-                          <span
-                            title={language === 'es' ? 'Hechizo Creado' : 'Custom Spell'}
-                            className="w-4 h-4 rounded-full bg-purple-900/90 text-purple-300 border border-purple-500/50 flex items-center justify-center text-[10px] font-bold shadow-xs"
-                          >
-                            <Sparkles className="w-2.5 h-2.5" />
-                          </span>
-                        )}
                       </div>
 
                       {/* Favorite button toggle */}
