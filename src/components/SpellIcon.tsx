@@ -3,7 +3,7 @@ import { getOfficialSpellIconUrl, sanitizeBg3Url } from '../data/bg3IconHelper';
 import { MagicSchool } from '../types';
 import { getSchoolTheme } from '../data/schools';
 import { getCachedImageUrl, resolveSpellImageUrl } from '../services/imageService';
-import { ASTRAEA_EMBLEM_BG3_DATA_URL } from '../data/astraeaIconData';
+import { isOfficialDndLineIcon, OfficialSpellLineIcon } from './OfficialSpellLineIcon';
 
 interface SpellIconProps {
   spell: {
@@ -41,14 +41,9 @@ export const SpellIcon: React.FC<SpellIconProps> = ({
   const candidates = useMemo(() => {
     const list: string[] = [];
 
-    // Special guarantee: Bendición de Astraea uses its dedicated high-fidelity BG3 emblem icon
-    if (spell.id === 'bendicion-de-astraea' || (spell.name && spell.name.toLowerCase().includes('astraea'))) {
-      list.push(ASTRAEA_EMBLEM_BG3_DATA_URL);
-    }
-
     // 1. Check custom local storage cache (uploaded or edited image)
     const customCached = getCachedImageUrl(spell.bg3IconUrl || spell.iconUrl, spell.id);
-    if (customCached && !list.includes(customCached)) {
+    if (customCached) {
       list.push(customCached);
     }
 
@@ -60,7 +55,7 @@ export const SpellIcon: React.FC<SpellIconProps> = ({
 
     // 3. Fallback to spellbookdnd icon if available and different
     if (spell.iconUrl) {
-      const dndUrl = (spell.iconUrl.startsWith('http') || spell.iconUrl.startsWith('data:') || spell.iconUrl.startsWith('/'))
+      const dndUrl = spell.iconUrl.startsWith('http') || spell.iconUrl.startsWith('data:')
         ? spell.iconUrl
         : `https://www.spellbookdnd.com${spell.iconUrl}`;
       const sanitizedDnd = sanitizeBg3Url(dndUrl) || dndUrl;
@@ -144,14 +139,25 @@ export const SpellIcon: React.FC<SpellIconProps> = ({
       />
 
       {activeSrc ? (
-        <img
-          src={activeSrc}
-          alt={spell.name || 'Hechizo'}
-          loading="lazy"
-          referrerPolicy="no-referrer"
-          onError={handleImageError}
-          className="relative z-10 w-full h-full object-contain filter drop-shadow-md select-none transition-transform duration-300 group-hover:scale-110"
-        />
+        isOfficialDndLineIcon(activeSrc, spell) ? (
+          <OfficialSpellLineIcon
+            iconUrl={activeSrc}
+            name={spell.name || 'Hechizo'}
+            school={spell.school ? String(spell.school) : undefined}
+            color={spell.color}
+            className="relative z-10 w-full h-full transition-transform duration-300 group-hover:scale-110"
+            onError={handleImageError}
+          />
+        ) : (
+          <img
+            src={activeSrc}
+            alt={spell.name || 'Hechizo'}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            onError={handleImageError}
+            className="relative z-10 w-full h-full object-contain filter drop-shadow-md select-none transition-transform duration-300 group-hover:scale-110"
+          />
+        )
       ) : (
         /* Fallback: School Icon with specific vivid school color */
         <div className="relative z-10 flex flex-col items-center justify-center text-center p-2">

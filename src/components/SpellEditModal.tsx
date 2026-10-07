@@ -35,6 +35,7 @@ import officialSpellbookIcons from '../data/officialSpellbookIcons.json';
 import { getSchoolTheme } from '../data/schools';
 import { githubService, GitHubSaveResult } from '../services/githubService';
 import { SpellIcon } from './SpellIcon';
+import { OfficialSpellLineIcon } from './OfficialSpellLineIcon';
 import { MarkdownText } from './MarkdownText';
 import { saveLocalCustomImage, removeLocalCustomImage, getCachedImageUrl } from '../services/imageService';
 import { compressImageIcon } from '../services/storageHelper';
@@ -973,12 +974,11 @@ export const SpellEditModal: React.FC<SpellEditModalProps> = ({
                           title={`${item.name} (${item.school})`}
                         >
                           <div className="w-12 h-12 rounded-lg overflow-hidden bg-black/40 flex items-center justify-center">
-                            <img
-                              src={item.iconUrl}
-                              alt={item.name}
-                              loading="lazy"
-                              referrerPolicy="no-referrer"
-                              className="w-full h-full object-contain group-hover:scale-110 transition-transform"
+                            <OfficialSpellLineIcon
+                              iconUrl={item.iconUrl}
+                              name={item.name}
+                              school={item.school}
+                              className="w-full h-full group-hover:scale-110 transition-transform"
                             />
                           </div>
                           <span className="text-[9px] font-medium text-slate-300 truncate w-full text-center">

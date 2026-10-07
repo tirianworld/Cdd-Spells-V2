@@ -21,6 +21,7 @@ import { PRIMORDIAL_MAGICS } from '../data/primordialMagic';
 import { SPELL_ORIGINS } from '../data/spellOrigins';
 import { DAMAGE_TYPES } from '../data/damageTypes';
 import { SpellIcon } from './SpellIcon';
+import { OfficialSpellLineIcon } from './OfficialSpellLineIcon';
 import { MarkdownText } from './MarkdownText';
 import bg3IconsData from '../data/bg3Icons.json';
 import officialSpellbookIcons from '../data/officialSpellbookIcons.json';
@@ -823,10 +824,11 @@ export const CustomSpellModal: React.FC<CustomSpellModalProps> = ({
                               }`}
                             >
                               <div className="w-12 h-12 rounded-lg overflow-hidden bg-black/40 flex items-center justify-center">
-                                <img
-                                  src={dataUrl}
-                                  alt="Custom"
-                                  className="w-full h-full object-contain group-hover:scale-110 transition-transform"
+                                <OfficialSpellLineIcon
+                                  iconUrl={dataUrl}
+                                  name={key}
+                                  school={school}
+                                  className="w-full h-full group-hover:scale-110 transition-transform"
                                 />
                               </div>
                               <span className="text-[9px] font-medium text-slate-300 truncate w-full text-center">
@@ -871,11 +873,11 @@ export const CustomSpellModal: React.FC<CustomSpellModalProps> = ({
                         title={`${item.name} (${item.school})`}
                       >
                         <div className="w-12 h-12 rounded-lg overflow-hidden bg-black/40 flex items-center justify-center">
-                          <img
-                            src={item.iconUrl}
-                            alt={item.name}
-                            loading="lazy"
-                            className="w-full h-full object-contain group-hover:scale-110 transition-transform"
+                          <OfficialSpellLineIcon
+                            iconUrl={item.iconUrl}
+                            name={item.name}
+                            school={item.school}
+                            className="w-full h-full group-hover:scale-110 transition-transform"
                           />
                         </div>
                         <span className="text-[9px] font-medium text-slate-300 truncate w-full text-center">
