@@ -27,7 +27,7 @@ import {
 } from '../types';
 import { ALL_CLASSES, ALL_SCHOOLS } from '../data/spells';
 import { ALL_SPELLS } from '../data/allSpells';
-import { PRIMORDIAL_MAGICS } from '../data/primordialMagic';
+import { PRIMORDIAL_MAGICS, PRIMORDIAL_FIRST_GEN, PRIMORDIAL_SECOND_GEN } from '../data/primordialMagic';
 import { SPELL_ORIGINS } from '../data/spellOrigins';
 import { DAMAGE_TYPES } from '../data/damageTypes';
 import bg3IconsData from '../data/bg3Icons.json';
@@ -692,11 +692,20 @@ export const SpellEditModal: React.FC<SpellEditModalProps> = ({
                     className="w-full px-2.5 py-2 rounded-lg bg-[#14232c] border border-[#213744] text-slate-100 focus:outline-hidden focus:border-[#bafafd] cursor-pointer"
                   >
                     <option value="">(Ninguna)</option>
-                    {PRIMORDIAL_MAGICS.map((p) => (
-                      <option key={p.name} value={p.name}>
-                        {p.name}
-                      </option>
-                    ))}
+                    <optgroup label="1ª Generación (Primordiales Puras)">
+                      {PRIMORDIAL_FIRST_GEN.map((p) => (
+                        <option key={p.name} value={p.name}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="2ª Generación (Fusión Ávalon)">
+                      {PRIMORDIAL_SECOND_GEN.map((p) => (
+                        <option key={p.name} value={p.name}>
+                          {p.name}
+                        </option>
+                      ))}
+                    </optgroup>
                   </select>
                 </div>
 

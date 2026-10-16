@@ -13,7 +13,8 @@ import { SpellListsView } from './components/SpellListsView';
 import { PublicGalleryView } from './components/PublicGalleryView';
 import { EditSpellListModal } from './components/EditSpellListModal';
 import { AddToListModal } from './components/AddToListModal';
-import { Character, FilterState, Spell, ViewTab, MagicSchool, DndClass, PrimordialMagic, GroupByDistribution, SpellFunctionality, SpellTarget, SpellList } from './types';
+import { PrimordialLoreModal } from './components/PrimordialLoreModal';
+import { Character, FilterState, Spell, ViewTab, MagicSchool, DndClass, PrimordialMagic, GroupByDistribution, SpellFunctionality, SpellTarget, SpellOrigin, SpellList } from './types';
 import { ALL_SPELLS } from './data/allSpells';
 import { DEFAULT_CHARACTERS } from './data/spells';
 import { DEFAULT_PUBLIC_LISTS } from './data/defaultPublicLists';
@@ -28,10 +29,11 @@ import {
   likePublicList,
   decodeListFromUrl,
 } from './services/spellListService';
-import { getSpellPrimordialMagic } from './data/primordialMagic';
+import { getSpellPrimordialMagic, PrimordialMagicInfo, PRIMORDIAL_MAGIC_MAP } from './data/primordialMagic';
 import { getSpellFunctionalities } from './data/spellFunctionalities';
 import { getSpellDamageTypes } from './data/damageTypes';
 import { getSpellTargets } from './data/spellTargets';
+import { getSpellOrigin, SPELL_ORIGIN_OPTIONS } from './data/spellOrigins';
 import { sanitizeBg3Url } from './data/bg3IconHelper';
 import { githubService, GitHubSaveResult } from './services/githubService';
 import {
@@ -244,6 +246,18 @@ export default function App() {
   // Active Spell for Modal Detail
   const [activeSpellDetail, setActiveSpellDetail] = useState<Spell | null>(null);
 
+  // Active Primordial Lore Modal
+  const [activePrimordialLore, setActivePrimordialLore] = useState<PrimordialMagicInfo | null>(null);
+
+  const handleOpenPrimordialLore = (magic: PrimordialMagicInfo | PrimordialMagic) => {
+    if (typeof magic === 'string') {
+      const info = PRIMORDIAL_MAGIC_MAP[magic];
+      if (info) setActivePrimordialLore(info);
+    } else {
+      setActivePrimordialLore(magic);
+    }
+  };
+
   // Toast Notification state
   const [toastMessage, setToastMessage] = useState<{
     text: string;
@@ -266,6 +280,7 @@ export default function App() {
     primordialMagics: [],
     functionalities: [],
     targets: [],
+    origins: [],
     groupBy: 'primordial',
     castingTime: '',
     concentration: null,
@@ -859,6 +874,21 @@ export default function App() {
     setFilterState((prev) => ({ ...prev, targets: [] }));
   };
 
+  const handleToggleOriginFromSidebar = (origin: SpellOrigin) => {
+    setFilterState((prev) => {
+      const current = prev.origins || [];
+      const exists = current.includes(origin);
+      return {
+        ...prev,
+        origins: exists ? current.filter((o) => o !== origin) : [...current, origin],
+      };
+    });
+  };
+
+  const handleClearOriginsFromSidebar = () => {
+    setFilterState((prev) => ({ ...prev, origins: [] }));
+  };
+
   // Filter and Sort Spells
   const filteredSpells = useMemo(() => {
     return spells
@@ -938,6 +968,17 @@ export default function App() {
           const spellTargets = getSpellTargets(s);
           const hasMatchingTarget = filterState.targets.some((t) => spellTargets.includes(t));
           if (!hasMatchingTarget) return false;
+        }
+
+        // Origen (Origins) filter: Infernal, Celestial, Elemental, Feérica
+        if (filterState.origins && filterState.origins.length > 0) {
+          const spellOrigin = getSpellOrigin(s);
+          if (!spellOrigin) return false;
+          const hasMatchingOrigin = filterState.origins.some((orig) => {
+            if ((orig === 'Feérica' || orig === 'Feérico') && (spellOrigin === 'Feérica' || spellOrigin === 'Feérico')) return true;
+            return orig === spellOrigin;
+          });
+          if (!hasMatchingOrigin) return false;
         }
 
         // Concentration
@@ -1025,6 +1066,9 @@ export default function App() {
         selectedTargets={filterState.targets}
         onToggleTarget={handleToggleTargetFromSidebar}
         onClearTargets={handleClearTargetsFromSidebar}
+        selectedOrigins={filterState.origins}
+        onToggleOrigin={handleToggleOriginFromSidebar}
+        onClearOrigins={handleClearOriginsFromSidebar}
         selectedDamageType={filterState.damageType || null}
         selectedDamageTypes={filterState.damageTypes}
         onToggleDamageType={handleToggleDamageTypeFromSidebar}
@@ -1039,6 +1083,7 @@ export default function App() {
         selectedPrimordials={filterState.primordialMagics}
         onTogglePrimordial={handleTogglePrimordialFromSidebar}
         onClearPrimordials={handleClearPrimordialsFromSidebar}
+        onOpenPrimordialLore={handleOpenPrimordialLore}
         groupBy={filterState.groupBy || 'level'}
         onGroupByChange={(mode) => setFilterState((prev) => ({ ...prev, groupBy: mode }))}
         activeCharacter={activeCharacter}
@@ -1124,6 +1169,7 @@ export default function App() {
                 hasActiveCharacter={Boolean(activeCharacter)}
                 activeCharacterName={activeCharacter?.name}
                 totalFiltered={filteredSpells.length}
+                onOpenPrimordialLore={handleOpenPrimordialLore}
               />
 
               {/* Section 3: Spells Presentation (Always Icon Grid) */}
@@ -1152,6 +1198,7 @@ export default function App() {
                     onEditSpell={handleOpenEditSpell}
                     onAddToList={(s) => setSpellToAddToList(s)}
                     groupBy={filterState.groupBy || 'level'}
+                    onOpenPrimordialLore={handleOpenPrimordialLore}
                   />
                 ) : (
                   <div className="text-center py-16 px-4 bg-[#10181e] rounded-2xl border border-[#1b2a33] space-y-3">
@@ -1175,6 +1222,7 @@ export default function App() {
                           primordialMagics: [],
                           functionalities: [],
                           targets: [],
+                          origins: [],
                           groupBy: 'primordial',
                           castingTime: '',
                           concentration: null,
@@ -1314,8 +1362,23 @@ export default function App() {
             onAddToList={(s) => {
               setSpellToAddToList(s);
             }}
+            onOpenPrimordialLore={handleOpenPrimordialLore}
           />
         )}
+
+        {/* Primordial Magic Lore Modal (Dracopedia Canonical Lore & 2ª Generación) */}
+        <PrimordialLoreModal
+          primordial={activePrimordialLore}
+          onClose={() => setActivePrimordialLore(null)}
+          language={language}
+          onFilterByThisMagic={(magicName) => {
+            setFilterState((prev) => ({
+              ...prev,
+              primordialMagics: [magicName as PrimordialMagic],
+            }));
+            if (currentTab !== 'catalog') setCurrentTab('catalog');
+          }}
+        />
 
         {/* Spell Edit Modal with GitHub sync */}
         {editingSpell && (

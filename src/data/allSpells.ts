@@ -10,7 +10,7 @@ export const ALL_SPELLS: Spell[] = [
     "level": 5,
     "school": "Evocación",
     "schoolEn": "Evocation",
-    "primordialMagic": "Magia Divina",
+    "primordialMagic": "Magia Áurea",
     "origin": "Celestial",
     "castingTime": "1 acción",
     "range": "Personal (radio de 9 m / 30 pies)",

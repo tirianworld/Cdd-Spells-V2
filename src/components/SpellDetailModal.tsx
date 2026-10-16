@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { X, Copy, Check, Printer, BookMarked, Star, Sparkles, Edit3, ScrollText } from 'lucide-react';
 import { Spell, Character } from '../types';
-import { getSpellPrimordialMagic, PRIMORDIAL_MAGIC_MAP } from '../data/primordialMagic';
+import { getSpellPrimordialMagic, PRIMORDIAL_MAGIC_MAP, PrimordialMagicInfo } from '../data/primordialMagic';
 import { getSpellDamageTypes, DAMAGE_TYPES } from '../data/damageTypes';
 import { getSpellTargets, SPELL_TARGET_OPTIONS } from '../data/spellTargets';
 import { getSpellFunctionalities, SPELL_FUNCTIONALITIES } from '../data/spellFunctionalities';
+import { getSpellOrigin, ORIGIN_MAP } from '../data/spellOrigins';
 import { SpellIcon } from './SpellIcon';
 import { MarkdownText } from './MarkdownText';
 
@@ -20,6 +21,7 @@ interface SpellDetailModalProps {
   onPrintSingle?: (spell: Spell) => void;
   onEditSpell?: (spell: Spell) => void;
   onAddToList?: (spell: Spell) => void;
+  onOpenPrimordialLore?: (magic: PrimordialMagicInfo) => void;
 }
 
 export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
@@ -33,6 +35,7 @@ export const SpellDetailModal: React.FC<SpellDetailModalProps> = ({
   onPrintSingle,
   onEditSpell,
   onAddToList,
+  onOpenPrimordialLore,
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -172,11 +175,16 @@ ${spell.higherLevels ? `\nA niveles superiores: ${spell.higherLevels}` : ''}`;
               })}
 
               {primordialInfo && (
-                <span
-                  className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${primordialInfo.bgColor} ${primordialInfo.borderColor} ${primordialInfo.textColor} flex items-center gap-1.5 shadow-xs`}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onOpenPrimordialLore) onOpenPrimordialLore(primordialInfo);
+                  }}
+                  className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${primordialInfo.bgColor} ${primordialInfo.borderColor} ${primordialInfo.textColor} flex items-center gap-1.5 shadow-xs hover:brightness-110 cursor-pointer transition-all`}
                   style={{
                     boxShadow: `0 0 10px ${primordialInfo.accentGlow || 'rgba(186,250,253,0.4)'}`,
                   }}
+                  title={language === 'es' ? `Ver Lore Canónico de ${primordial}` : `View ${primordial} Lore`}
                 >
                   <div
                     className="w-4 h-4 rounded-full overflow-hidden flex items-center justify-center shrink-0 bg-[#090e12] ring-1 ring-white/20"
@@ -187,7 +195,12 @@ ${spell.higherLevels ? `\nA niveles superiores: ${spell.higherLevels}` : ''}`;
                     <PrimordialIcon className="w-full h-full object-contain rounded-full" />
                   </div>
                   <span>{primordial}</span>
-                </span>
+                  {primordialInfo.generation === 2 && (
+                    <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-950 text-amber-300 border border-amber-500/50 font-mono">
+                      2ª Gen
+                    </span>
+                  )}
+                </button>
               )}
 
               {getSpellFunctionalities(spell).map((fnId) => {
@@ -225,6 +238,29 @@ ${spell.higherLevels ? `\nA niveles superiores: ${spell.higherLevels}` : ''}`;
                   </span>
                 );
               })}
+
+              {(() => {
+                const originName = getSpellOrigin(spell);
+                if (!originName) return null;
+                const originInfo = ORIGIN_MAP[originName];
+                if (!originInfo) return null;
+                const OriginIcon = originInfo.icon;
+                return (
+                  <span
+                    key={originName}
+                    title={language === 'es' ? originInfo.description : originInfo.descriptionEn}
+                    className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border flex items-center gap-1.5 shadow-xs ${originInfo.bgColor} ${originInfo.textColor} ${originInfo.borderColor}`}
+                    style={{
+                      boxShadow: `0 0 10px ${originInfo.accentGlow}`,
+                    }}
+                  >
+                    <div className="w-4 h-4 rounded-full overflow-hidden flex items-center justify-center shrink-0 bg-[#090e12] ring-1 ring-white/10">
+                      <OriginIcon className={`w-2.5 h-2.5 ${originInfo.textColor}`} />
+                    </div>
+                    <span>{language === 'es' ? originInfo.name : originInfo.nameEn}</span>
+                  </span>
+                );
+              })()}
             </div>
           </div>
         </div>

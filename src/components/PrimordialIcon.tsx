@@ -37,6 +37,10 @@ export const PRIMORDIAL_GLOW_COLORS: Record<PrimordialMagic, { primary: string; 
     primary: 'rgba(168, 85, 247, 0.95)',
     secondary: 'rgba(192, 132, 252, 0.65)',
   },
+  'Magia Áurea': {
+    primary: 'rgba(250, 204, 21, 0.95)',
+    secondary: 'rgba(234, 179, 8, 0.75)',
+  },
 };
 
 export const NaturalMagicIcon: React.FC<PrimordialIconProps> = ({
@@ -129,6 +133,35 @@ export const ProfaneMagicIcon: React.FC<PrimordialIconProps> = ({
   />
 );
 
+export const AureaMagicIcon: React.FC<PrimordialIconProps> = ({
+  className = 'w-5 h-5',
+  alt = 'Magia Áurea',
+}) => (
+  <div
+    title={alt}
+    style={{
+      filter: 'drop-shadow(0 0 4px rgba(250,204,21,0.95)) drop-shadow(0 0 9px rgba(234,179,8,0.75))',
+    }}
+    className={`inline-flex items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-yellow-500 to-amber-700 p-0.5 select-none ${className}`}
+  >
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full text-slate-950">
+      <circle cx="12" cy="12" r="10" fill="#fef08a" opacity="0.95" />
+      <path d="M12 2L13.2 4.8H10.8L12 2Z" fill="#b45309" />
+      <path d="M19 5L17 7.2L16 6L19 5Z" fill="#b45309" />
+      <path d="M5 5L8 6L7 7.2L5 5Z" fill="#b45309" />
+      <path
+        d="M12 18V11M12 11C10.5 9.5 9 10 7.5 11M12 11C13.5 9.5 15 10 16.5 11M12 14C10 13 8.5 13.5 7 15M12 14C14 13 15.5 13.5 17 15M10 20H14"
+        stroke="#78350f"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="8" r="2.2" fill="#d97706" />
+      <circle cx="12" cy="8" r="1.1" fill="#ffffff" />
+    </svg>
+  </div>
+);
+
 export const PRIMORDIAL_ICON_MAP = {
   'Magia Natural': NaturalMagicIcon,
   'Magia Salvaje': WildMagicIcon,
@@ -136,6 +169,7 @@ export const PRIMORDIAL_ICON_MAP = {
   'Magia Divina': DivineMagicIcon,
   'Magia Extraplanar': ExtraplanarMagicIcon,
   'Magia Profana': ProfaneMagicIcon,
+  'Magia Áurea': AureaMagicIcon,
 } as const;
 
 export const PRIMORDIAL_IMAGE_URLS = {
@@ -145,4 +179,5 @@ export const PRIMORDIAL_IMAGE_URLS = {
   'Magia Divina': divinaImg,
   'Magia Extraplanar': extraplanarImg,
   'Magia Profana': profanaImg,
+  'Magia Áurea': '',
 } as const;

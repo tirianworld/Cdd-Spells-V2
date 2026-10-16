@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Search, X, SlidersHorizontal, Star, BookMarked, CheckCircle2, ChevronDown, ChevronUp, ChevronRight, FolderTree, Sparkles, BookOpen, Target, Minimize2, Maximize2 } from 'lucide-react';
-import { DndClass, FilterState, MagicSchool, PrimordialMagic, SpellFunctionality, SpellTarget } from '../types';
+import { DndClass, FilterState, MagicSchool, PrimordialMagic, SpellFunctionality, SpellTarget, SpellOrigin } from '../types';
 import { ALL_CLASSES, ALL_SCHOOLS } from '../data/spells';
-import { PRIMORDIAL_MAGICS } from '../data/primordialMagic';
+import { PRIMORDIAL_MAGICS, PRIMORDIAL_FIRST_GEN, PRIMORDIAL_SECOND_GEN, PrimordialMagicInfo } from '../data/primordialMagic';
 import { DAMAGE_TYPES } from '../data/damageTypes';
 import { SPELL_FUNCTIONALITIES } from '../data/spellFunctionalities';
 import { SPELL_TARGET_OPTIONS } from '../data/spellTargets';
+import { SPELL_ORIGIN_OPTIONS } from '../data/spellOrigins';
 import { getSchoolTheme } from '../data/schools';
 import { MesaRedondaWatermark } from './MesaRedondaWatermark';
 
@@ -16,6 +17,7 @@ interface SpellFilterBarProps {
   hasActiveCharacter: boolean;
   activeCharacterName?: string;
   totalFiltered: number;
+  onOpenPrimordialLore?: (magic: PrimordialMagicInfo) => void;
 }
 
 const LEVEL_LABELS_ES = ['Trucos', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -28,6 +30,7 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
   hasActiveCharacter,
   activeCharacterName,
   totalFiltered,
+  onOpenPrimordialLore,
 }) => {
   const [isMinimized, setIsMinimized] = useState<boolean>(() => {
     try {
@@ -53,6 +56,7 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
     schools: false,
     damage: false,
     targets: false,
+    origins: false,
     classes: false,
   });
 
@@ -114,6 +118,15 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
     onFilterChange({ ...filter, targets: newTargets });
   };
 
+  const toggleOrigin = (origin: SpellOrigin) => {
+    const current = filter.origins || [];
+    const exists = current.includes(origin);
+    const newOrigins = exists
+      ? current.filter((o) => o !== origin)
+      : [...current, origin];
+    onFilterChange({ ...filter, origins: newOrigins });
+  };
+
   const toggleDamageType = (dtName: string) => {
     const current = filter.damageTypes || (filter.damageType ? [filter.damageType] : []);
     const exists = current.includes(dtName);
@@ -137,6 +150,7 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
       primordialMagics: [],
       functionalities: [],
       targets: [],
+      origins: [],
       castingTime: '',
       concentration: null,
       ritual: null,
@@ -159,6 +173,7 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
     (filter.primordialMagics && filter.primordialMagics.length > 0) ||
     (filter.functionalities && filter.functionalities.length > 0) ||
     (filter.targets && filter.targets.length > 0) ||
+    (filter.origins && filter.origins.length > 0) ||
     filter.concentration !== null ||
     filter.ritual !== null ||
     filter.components.verbal ||
@@ -180,6 +195,7 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
     (filter.primordialMagics?.length || 0) +
     (filter.functionalities?.length || 0) +
     (filter.targets?.length || 0) +
+    (filter.origins?.length || 0) +
     (filter.damageTypes?.length || 0) +
     (filter.concentration !== null ? 1 : 0) +
     (filter.ritual !== null ? 1 : 0) +
@@ -496,6 +512,65 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
         </div>
       </div>
 
+      {/* Origen Filter Chips (Infernal, Celestial, Elemental, Feérica) */}
+      <div className="relative z-10 pt-2 border-t border-[#17232b]/60">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-[#8a9ba8] font-heading flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-[#bafafd]" />
+            <span>{language === 'es' ? 'Origen' : 'Origin'}</span>
+          </span>
+          {filter.origins && filter.origins.length > 0 && (
+            <button
+              type="button"
+              onClick={() => onFilterChange({ ...filter, origins: [] })}
+              className="text-[11px] text-[#bafafd] hover:underline cursor-pointer"
+            >
+              {language === 'es' ? 'Ver todos los orígenes' : 'All origins'}
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            onClick={() => onFilterChange({ ...filter, origins: [] })}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+              !filter.origins || filter.origins.length === 0
+                ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/50 shadow-xs'
+                : 'bg-[#0e1419] text-[#8a9ba8] border border-[#1b2832] hover:text-slate-200'
+            }`}
+          >
+            {language === 'es' ? 'Todos' : 'All'}
+          </button>
+          {SPELL_ORIGIN_OPTIONS.map((opt) => {
+            const isSelected = (filter.origins || []).includes(opt.name);
+            const IconComp = opt.icon;
+            return (
+              <button
+                key={opt.name}
+                type="button"
+                onClick={() => toggleOrigin(opt.name)}
+                title={language === 'es' ? opt.description : opt.descriptionEn}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  isSelected
+                    ? 'bg-[#14282c] text-[#bafafd] shadow-xs border border-[#bafafd]/60'
+                    : 'bg-[#0e1419] text-[#8a9ba8] border border-[#1b2832] hover:text-white hover:border-[#233a48]'
+                }`}
+              >
+                <div
+                  className={`w-4 h-4 rounded-full overflow-hidden flex items-center justify-center shrink-0 border ${opt.bgColor} ${opt.borderColor} bg-[#090e12] ring-1 ring-white/10`}
+                  style={{
+                    boxShadow: isSelected ? `0 0 8px ${opt.accentGlow}` : undefined,
+                  }}
+                >
+                  <IconComp className={`w-2.5 h-2.5 ${opt.textColor}`} />
+                </div>
+                <span>{language === 'es' ? opt.name : opt.nameEn}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Character & Source Quick State Filters */}
       <div className="relative z-10 flex flex-wrap gap-2 pt-2 border-t border-[#17232b]">
         {hasActiveCharacter && (
@@ -614,38 +689,84 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
             </div>
 
             {!collapsedSections.primordial && (
-              <div className="flex flex-wrap gap-1.5">
-                {PRIMORDIAL_MAGICS.map((p) => {
-                  const isSelected = (filter.primordialMagics || []).includes(p.name);
-                  const IconComp = p.icon;
-                  return (
-                    <button
-                      key={p.name}
-                      type="button"
-                      onClick={() => togglePrimordial(p.name)}
-                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                        isSelected
-                          ? 'bg-[#14282e] text-[#bafafd] border-[#bafafd]/60 shadow-xs'
-                          : 'bg-[#0e1419] text-[#8a9ba8] border-[#1b2832] hover:text-white'
-                      }`}
-                      style={{
-                        boxShadow: isSelected
-                          ? '0 0 10px rgba(186,250,253,0.5)'
-                          : undefined,
-                      }}
-                    >
-                      <div
-                        className="w-4.5 h-4.5 rounded-full overflow-hidden flex items-center justify-center shrink-0 bg-[#090e12] ring-1 ring-white/15"
-                        style={{
-                          boxShadow: `0 0 6px ${p.accentGlow || 'rgba(255,255,255,0.25)'}`,
-                        }}
-                      >
-                        <IconComp className="w-full h-full object-contain rounded-full" />
+              <div className="space-y-2">
+                {/* 1ª Generación */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mr-1 select-none">
+                    {language === 'es' ? '1ª Gen:' : '1st Gen:'}
+                  </span>
+                  {PRIMORDIAL_FIRST_GEN.map((p) => {
+                    const isSelected = (filter.primordialMagics || []).includes(p.name);
+                    const IconComp = p.icon;
+                    return (
+                      <div key={p.name} className="inline-flex items-center rounded-full">
+                        <button
+                          type="button"
+                          onClick={() => togglePrimordial(p.name)}
+                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#14282e] text-[#bafafd] border-[#bafafd]/60 shadow-xs'
+                              : 'bg-[#0e1419] text-[#8a9ba8] border-[#1b2832] hover:text-white'
+                          }`}
+                          style={{
+                            boxShadow: isSelected
+                              ? '0 0 10px rgba(186,250,253,0.5)'
+                              : undefined,
+                          }}
+                        >
+                          <div
+                            className="w-4.5 h-4.5 rounded-full overflow-hidden flex items-center justify-center shrink-0 bg-[#090e12] ring-1 ring-white/15"
+                            style={{
+                              boxShadow: `0 0 6px ${p.accentGlow || 'rgba(255,255,255,0.25)'}`,
+                            }}
+                          >
+                            <IconComp className="w-full h-full object-contain rounded-full" />
+                          </div>
+                          <span>{language === 'es' ? p.name : p.nameEn}</span>
+                        </button>
                       </div>
-                      <span>{language === 'es' ? p.name : p.nameEn}</span>
-                    </button>
-                  );
-                })}
+                    );
+                  })}
+                </div>
+
+                {/* 2ª Generación */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[#172127]">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#bafafd] mr-1 select-none font-heading">
+                    {language === 'es' ? '2ª Gen:' : '2nd Gen:'}
+                  </span>
+                  {PRIMORDIAL_SECOND_GEN.map((p) => {
+                    const isSelected = (filter.primordialMagics || []).includes(p.name);
+                    const IconComp = p.icon;
+                    return (
+                      <div key={p.name} className="inline-flex items-center rounded-full">
+                        <button
+                          type="button"
+                          onClick={() => togglePrimordial(p.name)}
+                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                            isSelected
+                              ? 'bg-[#14282c] text-[#bafafd] border-[#bafafd]/60 shadow-xs'
+                              : 'bg-[#0e1419] text-[#8a9ba8] border-[#1b2832] hover:text-white'
+                          }`}
+                          style={{
+                            boxShadow: isSelected
+                              ? '0 0 10px rgba(186,250,253,0.5)'
+                              : undefined,
+                          }}
+                        >
+                          <div
+                            className="w-4.5 h-4.5 rounded-full overflow-hidden flex items-center justify-center shrink-0 bg-[#090e12] ring-1 ring-white/15"
+                            style={{
+                              boxShadow: `0 0 6px ${p.accentGlow || 'rgba(255,255,255,0.25)'}`,
+                            }}
+                          >
+                            <IconComp className="w-full h-full object-contain rounded-full" />
+                          </div>
+                          <span>{language === 'es' ? p.name : p.nameEn}</span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
@@ -872,6 +993,78 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
                         <IconComp className="w-full h-full object-contain rounded-full" />
                       </div>
                       <span>{language === 'es' ? opt.name : opt.nameEn}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Origen (Infernal, Celestial, Elemental, Feérica) */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <button
+                type="button"
+                onClick={() => toggleSection('origins')}
+                className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-[#8a9ba8] hover:text-[#bafafd] font-heading cursor-pointer transition-colors"
+              >
+                <span>{language === 'es' ? 'Origen' : 'Origin'}</span>
+                {collapsedSections.origins ? (
+                  <ChevronRight className="w-3 h-3" />
+                ) : (
+                  <ChevronDown className="w-3 h-3" />
+                )}
+              </button>
+              {(filter.origins && filter.origins.length > 0) && (
+                <button
+                  type="button"
+                  onClick={() => onFilterChange({ ...filter, origins: [] })}
+                  className="text-[10px] text-[#bafafd] hover:underline cursor-pointer"
+                >
+                  {language === 'es' ? 'Limpiar origen' : 'Clear origin'}
+                </button>
+              )}
+            </div>
+
+            {!collapsedSections.origins && (
+              <div className="flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => onFilterChange({ ...filter, origins: [] })}
+                  className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                    !filter.origins || filter.origins.length === 0
+                      ? 'bg-[#14282e] text-[#bafafd] border-[#bafafd]/50 shadow-xs'
+                      : 'bg-[#0e1419] text-[#8a9ba8] border-[#1b2832] hover:text-slate-200'
+                  }`}
+                >
+                  {language === 'es' ? 'Todos' : 'All'}
+                </button>
+                {SPELL_ORIGIN_OPTIONS.map((opt) => {
+                  const isSelected = (filter.origins || []).includes(opt.name);
+                  const IconComp = opt.icon;
+                  return (
+                    <button
+                      key={opt.name}
+                      type="button"
+                      onClick={() => toggleOrigin(opt.name)}
+                      title={language === 'es' ? opt.description : opt.descriptionEn}
+                      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-[#14282e] text-[#bafafd] border-[#bafafd]/50 shadow-xs'
+                          : 'bg-[#0e1419] text-[#8a9ba8] border-[#1b2832] hover:text-slate-200'
+                      }`}
+                    >
+                      <div
+                        className={`w-4 h-4 rounded-full overflow-hidden flex items-center justify-center shrink-0 border ${opt.bgColor} ${opt.borderColor} bg-[#090e12] ring-1 ring-white/10`}
+                        style={{
+                          boxShadow: isSelected ? `0 0 8px ${opt.accentGlow}` : undefined,
+                        }}
+                      >
+                        <IconComp className={`w-2.5 h-2.5 ${opt.textColor}`} />
+                      </div>
+                      <span className={isSelected ? 'text-[#bafafd] font-semibold' : ''}>
+                        {language === 'es' ? opt.name : opt.nameEn}
+                      </span>
                     </button>
                   );
                 })}

@@ -15,7 +15,8 @@ export type PrimordialMagic =
   | 'Magia Profana'
   | 'Magia Arcana'
   | 'Magia Salvaje'
-  | 'Magia Natural';
+  | 'Magia Natural'
+  | 'Magia Áurea';
 
 export type SpellUtility =
   | 'Curación'
@@ -42,15 +43,16 @@ export type SpellTarget =
 
 export type SpellOrigin =
   | 'Infernal'
-  | 'Elemental'
-  | 'Feérico'
   | 'Celestial'
+  | 'Elemental'
+  | 'Feérica'
+  | 'Feérico'
   | 'Mortal'
   | 'Shadowfell'
   | 'Astral'
   | 'Onírico';
 
-export type GroupByDistribution = 'level' | 'primordial' | 'school';
+export type GroupByDistribution = 'level' | 'primordial' | 'school' | 'origin';
 
 export type DndClass =
   | 'Artífice'
@@ -146,6 +148,7 @@ export interface FilterState {
   primordialMagics: PrimordialMagic[];
   functionalities: SpellFunctionality[];
   targets: SpellTarget[];
+  origins: SpellOrigin[];
   groupBy: GroupByDistribution;
   castingTime: string;
   concentration: boolean | null;

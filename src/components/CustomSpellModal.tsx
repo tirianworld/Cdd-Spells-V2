@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { Spell, MagicSchool, DndClass, SpellOrigin, PrimordialMagic } from '../types';
 import { ALL_CLASSES, ALL_SCHOOLS } from '../data/spells';
-import { PRIMORDIAL_MAGICS } from '../data/primordialMagic';
+import { PRIMORDIAL_MAGICS, PRIMORDIAL_FIRST_GEN, PRIMORDIAL_SECOND_GEN } from '../data/primordialMagic';
 import { SPELL_ORIGINS } from '../data/spellOrigins';
 import { DAMAGE_TYPES } from '../data/damageTypes';
 import { SpellIcon } from './SpellIcon';
@@ -594,11 +594,20 @@ export const CustomSpellModal: React.FC<CustomSpellModalProps> = ({
                   className="w-full bg-[#14222a] text-slate-100 rounded-lg px-3 py-2 border border-[#213540] focus:outline-hidden focus:border-[#bafafd] cursor-pointer"
                 >
                   <option value="">{language === 'es' ? '(Automática por afinidad canónica)' : '(Auto by canonical affinity)'}</option>
-                  {PRIMORDIAL_MAGICS.map((p) => (
-                    <option key={p.name} value={p.name}>
-                      {language === 'es' ? p.name : p.nameEn}
-                    </option>
-                  ))}
+                  <optgroup label={language === 'es' ? '1ª Generación (Primordiales Puras)' : '1st Generation (Pure Primordial)'}>
+                    {PRIMORDIAL_FIRST_GEN.map((p) => (
+                      <option key={p.name} value={p.name}>
+                        {language === 'es' ? p.name : p.nameEn}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label={language === 'es' ? '2ª Generación (Fusión Ávalon)' : '2nd Generation (Avalon Fusion)'}>
+                    {PRIMORDIAL_SECOND_GEN.map((p) => (
+                      <option key={p.name} value={p.name}>
+                        {language === 'es' ? p.name : p.nameEn}
+                      </option>
+                    ))}
+                  </optgroup>
                 </select>
               </div>
 

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Spell, Character, GroupByDistribution } from '../types';
 import { SpellIcon } from './SpellIcon';
-import { ChevronDown, ChevronUp, Star, Check, Bookmark, Sparkles, FolderTree } from 'lucide-react';
-import { getSpellPrimordialMagic, PRIMORDIAL_MAGICS } from '../data/primordialMagic';
+import { ChevronDown, ChevronUp, Star, Check, Bookmark, Sparkles, FolderTree, BookOpen } from 'lucide-react';
+import { getSpellPrimordialMagic, PRIMORDIAL_MAGICS, PrimordialMagicInfo } from '../data/primordialMagic';
 import { ALL_SCHOOLS } from '../data/spells';
 import { getSchoolTheme } from '../data/schools';
+import { getSpellOrigin, SPELL_ORIGIN_OPTIONS } from '../data/spellOrigins';
 
 interface SpellGridProps {
   spells: Spell[];
@@ -18,6 +19,7 @@ interface SpellGridProps {
   onEditSpell?: (spell: Spell) => void;
   onAddToList?: (spell: Spell) => void;
   groupBy?: GroupByDistribution;
+  onOpenPrimordialLore?: (magic: PrimordialMagicInfo) => void;
 }
 
 const LEVEL_NAMES_ES: Record<number, string> = {
@@ -73,6 +75,7 @@ interface GroupSection {
     interactions?: string;
     canonicalId?: string;
   };
+  primordialInfo?: PrimordialMagicInfo;
 }
 
 export const SpellGrid: React.FC<SpellGridProps> = ({
@@ -87,6 +90,7 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
   onEditSpell,
   onAddToList,
   groupBy = 'level',
+  onOpenPrimordialLore,
 }) => {
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
@@ -102,12 +106,21 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
     if (groupBy === 'primordial') {
       return PRIMORDIAL_MAGICS.map((p) => {
         const list = spells.filter((s) => getSpellPrimordialMagic(s) === p.name);
+        const isSecondGen = p.generation === 2;
         return {
           id: p.name,
-          title: p.name,
+          title: isSecondGen ? `2ª Generación • ${p.name}` : p.name,
+          subtitle: isSecondGen
+            ? 'Fusión Divina + Natural • Epicentro: Árbol Áureo de Ávalon'
+            : p.domain,
+          badgeText: isSecondGen ? '2ª Gen • Fusión' : '1ª Gen',
+          badgeColor: isSecondGen
+            ? 'bg-[#221b0e] text-amber-300 border-amber-500/60 shadow-[0_0_10px_rgba(245,158,11,0.25)]'
+            : 'bg-[#14282c] text-[#bafafd] border-[#bafafd]/35',
           count: list.length,
           spells: list,
           icon: p.icon,
+          primordialInfo: p,
         };
       }).filter((section) => section.spells.length > 0);
     }
@@ -140,6 +153,44 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
             : undefined,
         };
       }).filter((section) => section.spells.length > 0);
+    }
+
+    if (groupBy === 'origin') {
+      const originSections: GroupSection[] = SPELL_ORIGIN_OPTIONS.map((orig) => {
+        const list = spells.filter((s) => {
+          const so = getSpellOrigin(s);
+          if ((orig.name === 'Feérica' || orig.name === 'Feérico') && (so === 'Feérica' || so === 'Feérico')) return true;
+          return so === orig.name;
+        });
+        return {
+          id: orig.name,
+          title: language === 'es' ? `Origen • ${orig.name}` : `Origin • ${orig.nameEn}`,
+          subtitle: language === 'es' ? orig.description : orig.descriptionEn,
+          badgeText: language === 'es' ? orig.name : orig.nameEn,
+          badgeColor: `${orig.bgColor} ${orig.textColor} ${orig.borderColor}`,
+          count: list.length,
+          spells: list,
+          icon: orig.icon,
+        };
+      }).filter((section) => section.spells.length > 0);
+
+      const unassignedSpells = spells.filter((s) => !getSpellOrigin(s));
+      if (unassignedSpells.length > 0) {
+        originSections.push({
+          id: 'Arcano-Comun',
+          title: language === 'es' ? 'Magia Arcana y Común' : 'Arcane & Common Magic',
+          subtitle: language === 'es'
+            ? 'Conjuros y trucos arcanos sin afiliación planar específica (hechicería pura, artificio y transmutaciones comunes)'
+            : 'Arcane and common spells with no specific planar affiliation (pure wizardry, common utility)',
+          badgeText: language === 'es' ? 'Arcano / Común' : 'Arcane / Common',
+          badgeColor: 'bg-[#14282c] text-[#bafafd] border-[#bafafd]/35',
+          count: unassignedSpells.length,
+          spells: unassignedSpells,
+          icon: FolderTree,
+        });
+      }
+
+      return originSections;
     }
 
     // Default: Group by Level (0-9)
@@ -206,6 +257,20 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
               </div>
 
               <div className="flex items-center gap-2 text-slate-400 group-hover:text-slate-200 transition-colors shrink-0 ml-2">
+                {section.primordialInfo && onOpenPrimordialLore && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (section.primordialInfo) onOpenPrimordialLore(section.primordialInfo);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-[#14232c] hover:bg-[#1c3340] text-[#bafafd] hover:text-white border border-[#213744] text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer mr-1 shadow-xs"
+                    title={language === 'es' ? `Ver Lore de ${section.title}` : `View ${section.title} Lore`}
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="hidden sm:inline">Lore</span>
+                  </button>
+                )}
                 <span className="text-xs uppercase tracking-widest font-mono hidden md:inline opacity-70">
                   {isCollapsed
                     ? (language === 'es' ? 'Desplegar' : 'Expand')
