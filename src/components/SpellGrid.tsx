@@ -160,6 +160,7 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
         const list = spells.filter((s) => {
           const so = getSpellOrigin(s);
           if ((orig.name === 'Feérica' || orig.name === 'Feérico') && (so === 'Feérica' || so === 'Feérico')) return true;
+          if ((orig.name === 'Onírico' || (orig.name as string) === 'Onirico') && (so === 'Onírico' || (so as string) === 'Onirico')) return true;
           return so === orig.name;
         });
         return {

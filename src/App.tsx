@@ -970,12 +970,13 @@ export default function App() {
           if (!hasMatchingTarget) return false;
         }
 
-        // Origen (Origins) filter: Infernal, Celestial, Elemental, Feérica
+        // Origen (Origins) filter: Infernal, Celestial, Elemental, Feérica, Shadowfell, Onírico
         if (filterState.origins && filterState.origins.length > 0) {
           const spellOrigin = getSpellOrigin(s);
           if (!spellOrigin) return false;
           const hasMatchingOrigin = filterState.origins.some((orig) => {
             if ((orig === 'Feérica' || orig === 'Feérico') && (spellOrigin === 'Feérica' || spellOrigin === 'Feérico')) return true;
+            if ((orig === 'Onírico' || (orig as string) === 'Onirico') && (spellOrigin === 'Onírico' || (spellOrigin as string) === 'Onirico')) return true;
             return orig === spellOrigin;
           });
           if (!hasMatchingOrigin) return false;

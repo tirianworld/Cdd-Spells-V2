@@ -4,6 +4,8 @@ import {
   Sun,
   Wind,
   Sparkles,
+  Skull,
+  MoonStar,
   LucideIcon,
 } from 'lucide-react';
 import { SpellOrigin } from '../types';
@@ -27,6 +29,8 @@ export const ALL_SPELL_ORIGINS: SpellOrigin[] = [
   'Celestial',
   'Elemental',
   'Feérica',
+  'Shadowfell',
+  'Onírico',
 ];
 
 export const SPELL_ORIGIN_OPTIONS: OriginInfo[] = [
@@ -40,7 +44,7 @@ export const SPELL_ORIGIN_OPTIONS: OriginInfo[] = [
     bgColor: 'bg-red-950/40',
     borderColor: 'border-red-500/40',
     accentGlow: 'rgba(239, 68, 68, 0.4)',
-    description: 'Poderes de los Nueve Infiernos y el Abismo: fuego infernal, demonios, diablos, azufre, pactos oscuros y tormento.',
+    description: 'Poderes de los Nueve Infiernos y el Caos Abisal: fuego infernal, demonios, diablos, azufre, pactos oscuros y tormento.',
     descriptionEn: 'Powers of the Nine Hells and the Abyss: hellfire, fiends, brimstone, dark pacts and torment.',
   },
   {
@@ -79,8 +83,34 @@ export const SPELL_ORIGIN_OPTIONS: OriginInfo[] = [
     bgColor: 'bg-emerald-950/40',
     borderColor: 'border-emerald-500/40',
     accentGlow: 'rgba(16, 185, 129, 0.4)',
-    description: 'Magia salvaje y caprichosa del Feywild: encantos feéricos, hadas, naturaleza primordial, sueño, risa, metamorfosis y niebla.',
-    descriptionEn: 'Wild and whimsical Feywild magic: faerie glamour, fey, primal nature, slumber, laughter, shapeshifting and mists.',
+    description: 'Magia salvaje y caprichosa del Feywild: encantos feéricos, hadas, naturaleza primordial, risa, metamorfosis y niebla.',
+    descriptionEn: 'Wild and whimsical Feywild magic: faerie glamour, fey, primal nature, laughter, shapeshifting and mists.',
+  },
+  {
+    id: 'Shadowfell',
+    name: 'Shadowfell',
+    nameEn: 'Shadowfell',
+    icon: Skull,
+    color: '#09090b',
+    textColor: 'text-zinc-200',
+    bgColor: 'bg-black',
+    borderColor: 'border-zinc-700',
+    accentGlow: 'rgba(255, 255, 255, 0.25)',
+    description: 'Reino del Páramo Sombrío y la Reina Cuervo: nigromancia, muerte, no-muertos, sombras, almas, frío sepulcral y drenaje vital.',
+    descriptionEn: 'Realm of the Shadowfell and the Raven Queen: necromancy, death, undead, shadows, souls, sepulchral cold and life drain.',
+  },
+  {
+    id: 'Onírico',
+    name: 'Onírico',
+    nameEn: 'Oneiric',
+    icon: MoonStar,
+    color: '#818cf8',
+    textColor: 'text-indigo-300',
+    bgColor: 'bg-indigo-950/40',
+    borderColor: 'border-indigo-500/40',
+    accentGlow: 'rgba(129, 140, 248, 0.4)',
+    description: 'Dimensión de los Sueños y el Inconsciente: ensoñaciones, siestas místicas, pesadillas vivientes, ilusiones mentales y trance onírico.',
+    descriptionEn: 'Dimension of Dreams and the Subconscious: reveries, mystic slumber, waking nightmares, mental phantasms and oneiric trance.',
   },
 ];
 
@@ -92,50 +122,75 @@ export const ORIGIN_MAP: Record<string, OriginInfo> = {
   Elemental: SPELL_ORIGIN_OPTIONS[2],
   Feérica: SPELL_ORIGIN_OPTIONS[3],
   Feérico: SPELL_ORIGIN_OPTIONS[3], // Alias
+  Shadowfell: SPELL_ORIGIN_OPTIONS[4],
+  Onírico: SPELL_ORIGIN_OPTIONS[5],
+  Onirico: SPELL_ORIGIN_OPTIONS[5], // Alias without accent
 };
 
-// Verified canonical IDs from official compendium without cross-contamination
+// Pure infernal/abyssal magic (fiends, devils, demons, hellfire, dark pacts)
 const INFERNAL_SPELL_IDS = new Set([
-  'xphb-arms-of-hadar',
-  'xphb-hunger-of-hadar',
   'hellish-rebuke',
   'xge-infernal-calling',
   'xge-summon-lesser-demons',
   'xge-summon-greater-demon',
-  'finger-of-death',
-  'vampiric-touch',
-  'circle-of-death',
-  'harm',
-  'inflict-wounds',
-  'bestow-curse',
-  'hex',
-  'xphb-crown-of-madness',
-  'xge-soul-cage',
-  'ray-of-sickness',
-  'ray-of-enfeeblement',
-  'blight',
-  'eyebite',
-  'xge-danse-macabre',
-  'xge-negative-energy-flood',
-  'xge-enervation',
   'xphb-summon-fiend',
+  'xphb-arms-of-hadar',
+  'xphb-hunger-of-hadar',
+  'xphb-crown-of-madness',
+  'hex',
   'planar-binding',
-  'xge-maddening-darkness',
-  'animate-dead',
-  'create-undead',
 ]);
 
+// Pure Shadowfell magic (Shadowfell / Páramo Sombrío: necromancy, undead, shadows, sorrow, soul cages, life drain)
+const SHADOWFELL_SPELL_IDS = new Set([
+  'xphb-toll-the-dead',
+  'chill-touch',
+  'xge-cause-fear',
+  'fear',
+  'ray-of-sickness',
+  'ray-of-enfeeblement',
+  'inflict-wounds',
+  'darkness',
+  'xge-shadow-blade',
+  'xge-shadow-of-moil',
+  'tce-summon-shadowspawn',
+  'tce-spirit-shroud',
+  'animate-dead',
+  'create-undead',
+  'xphb-summon-undead',
+  'speak-with-dead',
+  'xphb-feign-death',
+  'bestow-curse',
+  'vampiric-touch',
+  'bmt-spirit-of-death',
+  'blight',
+  'xge-danse-macabre',
+  'xge-enervation',
+  'xge-negative-energy-flood',
+  'circle-of-death',
+  'harm',
+  'xge-soul-cage',
+  'eyebite',
+  'finger-of-death',
+  'xge-abi-dalzim-s-horrid-wilting',
+  'xge-maddening-darkness',
+  'scc-wither-and-bloom',
+  'egw-dark-star',
+  'xge-illusory-dragon',
+]);
+
+// Pure Upper Planes celestial / divine radiance & holy restoration
 const CELESTIAL_SPELL_IDS = new Set([
   'bendicion-de-astraea',
   'sacred-flame',
   'xphb-word-of-radiance',
   'bless',
   'cure-wounds',
-  'shield-of-faith',
-  'divine-favor',
   'healing-word',
   'guiding-bolt',
   'sanctuary',
+  'shield-of-faith',
+  'divine-favor',
   'spiritual-weapon',
   'branding-smite',
   'xge-healing-spirit',
@@ -173,9 +228,11 @@ const CELESTIAL_SPELL_IDS = new Set([
   'mass-heal',
   'power-word-heal',
   'true-resurrection',
+  'death-ward',
   'remove-curse',
 ]);
 
+// Pure Elemental Planes (fire, cold, lightning, thunder, earth/stone, wind/air, water)
 const ELEMENTAL_SPELL_IDS = new Set([
   'shocking-grasp',
   'xge-frostbite',
@@ -198,10 +255,10 @@ const ELEMENTAL_SPELL_IDS = new Set([
   'ice-knife',
   'burning-hands',
   'thunderwave',
+  'shatter',
   'xge-earth-tremor',
   'xge-aganazzar-s-scorcher',
   'dragons-breath',
-  'xge-dust-devil',
   'flaming-sphere',
   'xge-pyrotechnics',
   'gust-of-wind',
@@ -243,8 +300,12 @@ const ELEMENTAL_SPELL_IDS = new Set([
   'earthquake',
   'tsunami',
   'meteor-swarm',
+  'xge-dust-devil',
+  'xge-bones-of-the-earth',
+  'xge-maelstrom',
 ]);
 
+// Pure Feywild magic (fey nature, charms, tricks, laughter, polymorph)
 const FEERICA_SPELL_IDS = new Set([
   'vicious-mockery',
   'xphb-thorn-whip',
@@ -253,7 +314,6 @@ const FEERICA_SPELL_IDS = new Set([
   'shillelagh',
   'goodberry',
   'disguise-self',
-  'sleep',
   'animal-friendship',
   'entangle',
   'faerie-fire',
@@ -265,16 +325,16 @@ const FEERICA_SPELL_IDS = new Set([
   'misty-step',
   'barkskin',
   'xphb-beast-sense',
+  'xge-beast-bond',
+  'xphb-summon-beast',
   'suggestion',
   'xphb-summon-fey',
   'plant-growth',
   'speak-with-plants',
-  'hypnotic-pattern',
   'confusion',
   'conjure-woodland-beings',
   'xphb-grasping-vine',
   'polymorph',
-  'modify-memory',
   'awaken',
   'tree-stride',
   'irresistible-dance',
@@ -288,13 +348,38 @@ const FEERICA_SPELL_IDS = new Set([
   'charm-person',
   'charm-monster',
   'commune-with-nature',
+  'xge-wrath-of-nature',
+]);
+
+// Pure Oneiric / Dream magic (Dimension of Dreams, sleep, nightmares, psychic trance, mental phantasms)
+const ONIRICO_SPELL_IDS = new Set([
+  'dream',
+  'tce-dream-of-the-blue-veil',
+  'sleep',
+  'xge-catnap',
+  'phantasmal-force',
+  'phantasmal-killer',
+  'weird',
+  'dissonant-whispers',
+  'tce-tasha-s-mind-whip',
+  'mind-spike',
+  'xphb-synaptic-static',
+  'xge-mental-prison',
+  'hallucinatory-terrain',
+  'hypnotic-pattern',
+  'modify-memory',
+  'detect-thoughts',
+  'calm-emotions',
+  'mind-blank',
+  'feeblemind',
+  'xphb-mind-sliver',
 ]);
 
 /**
- * Accurately determines if a spell has one of the 4 requested cosmic planar origins:
- * Infernal, Celestial, Elemental, Feérica.
+ * Accurately determines if a spell has one of the cosmic planar origins:
+ * Infernal, Celestial, Elemental, Feérica, Shadowfell, Onírico.
  *
- * If the spell does not belong to any of these 4 planar origins (e.g., standard arcane spells
+ * If the spell does not belong to any of these planar origins (e.g., standard arcane spells
  * like Magic Missile, Shield, Counterspell, Alarm, Teleport, Wish, Mage Hand, etc.),
  * it returns `undefined` without forcing it into a wrong category.
  */
@@ -311,22 +396,32 @@ export function getSpellOrigin(spell: {
     if (spell.origin === 'Infernal') return 'Infernal';
     if (spell.origin === 'Celestial') return 'Celestial';
     if (spell.origin === 'Elemental') return 'Elemental';
+    if (spell.origin === 'Shadowfell') return 'Shadowfell';
+    if (spell.origin === 'Onírico' || (spell.origin as string) === 'Onirico') return 'Onírico';
     return undefined;
   }
 
   const id = (spell.id || '').toLowerCase().trim();
 
-  // 1. Exact canonical ID matching (100% precision)
+  // 1. Exact canonical ID matching (100% precision with zero overlaps)
   if (INFERNAL_SPELL_IDS.has(id)) return 'Infernal';
+  if (SHADOWFELL_SPELL_IDS.has(id)) return 'Shadowfell';
   if (CELESTIAL_SPELL_IDS.has(id)) return 'Celestial';
   if (ELEMENTAL_SPELL_IDS.has(id)) return 'Elemental';
   if (FEERICA_SPELL_IDS.has(id)) return 'Feérica';
+  if (ONIRICO_SPELL_IDS.has(id)) return 'Onírico';
 
   // 2. Strict title matching for user-created custom spells (title only, never description body)
   const name = (spell.name || '').toLowerCase();
   const nameEn = (spell.nameEn || '').toLowerCase();
   const title = `${name} ${nameEn}`;
 
+  if (title.includes('oníric') || title.includes('oniric') || title.includes('ensueño') || title.includes('pesadilla')) {
+    return 'Onírico';
+  }
+  if (title.includes('shadowfell') || title.includes('páramo sombrío') || title.includes('paramo sombrio')) {
+    return 'Shadowfell';
+  }
   if (title.includes('infernal') || title.includes('hadar') || title.includes('demoniac')) {
     return 'Infernal';
   }

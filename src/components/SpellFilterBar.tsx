@@ -512,7 +512,7 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
         </div>
       </div>
 
-      {/* Origen Filter Chips (Infernal, Celestial, Elemental, Feérica) */}
+      {/* Origen Filter Chips (Infernal, Celestial, Elemental, Feérica, Shadowfell, Onírico) */}
       <div className="relative z-10 pt-2 border-t border-[#17232b]/60">
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] font-bold uppercase tracking-widest text-[#8a9ba8] font-heading flex items-center gap-1.5">
@@ -1000,7 +1000,7 @@ export const SpellFilterBar: React.FC<SpellFilterBarProps> = ({
             )}
           </div>
 
-          {/* Origen (Infernal, Celestial, Elemental, Feérica) */}
+          {/* Origen (Infernal, Celestial, Elemental, Feérica, Shadowfell, Onírico) */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <button

@@ -874,7 +874,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
             )}
           </div>
 
-          {/* Origen Section (Infernal, Celestial, Elemental, Feérica) */}
+          {/* Origen Section (Infernal, Celestial, Elemental, Feérica, Shadowfell, Onírico) */}
           <div className="pt-2 border-t border-[#172127]">
             <div className="flex items-center justify-between px-1 mb-2">
               <button
