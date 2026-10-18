@@ -12,6 +12,7 @@ import {
   ScrollText,
   Globe,
   BookOpen,
+  Target,
 } from 'lucide-react';
 import { Character, DndClass, MagicSchool, ViewTab, PrimordialMagic, GroupByDistribution, SpellFunctionality, SpellTarget, SpellOrigin } from '../types';
 import { ALL_CLASSES, ALL_SCHOOLS } from '../data/spells';
@@ -21,6 +22,7 @@ import { DAMAGE_TYPES } from '../data/damageTypes';
 import { SPELL_FUNCTIONALITIES } from '../data/spellFunctionalities';
 import { SPELL_TARGET_OPTIONS } from '../data/spellTargets';
 import { SPELL_ORIGIN_OPTIONS } from '../data/spellOrigins';
+import { CLASS_OPTIONS } from '../data/classOptions';
 
 interface DragopediaSidebarProps {
   currentTab: ViewTab;
@@ -332,50 +334,94 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                     <button
                       type="button"
                       onClick={() => onGroupByChange('level')}
-                      className={`py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer text-center ${
+                      className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         groupBy === 'level'
-                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/35 shadow-xs'
+                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/50 shadow-[0_0_12px_rgba(186,250,253,0.35)]'
                           : 'text-[#8a9ba8] hover:text-slate-200'
                       }`}
                       title="Distribuir por Niveles"
                     >
-                      {language === 'es' ? 'Nivel' : 'Level'}
+                      <div
+                        className="w-3.5 h-3.5 rounded-full flex items-center justify-center border border-teal-500/40 bg-[#090e12] ring-1 ring-white/15 shrink-0 relative overflow-hidden"
+                        style={{
+                          boxShadow: groupBy === 'level'
+                            ? '0 0 10px rgba(45,212,191,0.8), inset 0 0 3px rgba(45,212,191,0.5)'
+                            : '0 0 4px rgba(45,212,191,0.35)',
+                        }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                        <span className="text-[8px] font-black font-mono text-teal-300 leading-none relative z-10">#</span>
+                      </div>
+                      <span>{language === 'es' ? 'Nivel' : 'Level'}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => onGroupByChange('primordial')}
-                      className={`py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer text-center ${
+                      className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         groupBy === 'primordial'
-                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/35 shadow-xs'
+                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/50 shadow-[0_0_12px_rgba(186,250,253,0.35)]'
                           : 'text-[#8a9ba8] hover:text-slate-200'
                       }`}
                       title="Distribuir por Magias Primordiales"
                     >
-                      {language === 'es' ? 'Primordial' : 'Primordial'}
+                      <div
+                        className="w-3.5 h-3.5 rounded-full flex items-center justify-center border border-amber-500/40 bg-[#090e12] ring-1 ring-white/15 shrink-0 relative overflow-hidden"
+                        style={{
+                          boxShadow: groupBy === 'primordial'
+                            ? '0 0 10px rgba(251,191,36,0.8), inset 0 0 3px rgba(251,191,36,0.5)'
+                            : '0 0 4px rgba(251,191,36,0.35)',
+                        }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                        <Flame className="w-2.5 h-2.5 text-amber-300 relative z-10" style={{ filter: 'drop-shadow(0 0 3px currentColor)' }} />
+                      </div>
+                      <span>{language === 'es' ? 'Prim.' : 'Prim.'}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => onGroupByChange('school')}
-                      className={`py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer text-center ${
+                      className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         groupBy === 'school'
-                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/35 shadow-xs'
+                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/50 shadow-[0_0_12px_rgba(186,250,253,0.35)]'
                           : 'text-[#8a9ba8] hover:text-slate-200'
                       }`}
                       title="Distribuir por Escuela de Magia"
                     >
-                      {language === 'es' ? 'Escuela' : 'School'}
+                      <div
+                        className="w-3.5 h-3.5 rounded-full flex items-center justify-center border border-indigo-500/40 bg-[#090e12] ring-1 ring-white/15 shrink-0 relative overflow-hidden"
+                        style={{
+                          boxShadow: groupBy === 'school'
+                            ? '0 0 10px rgba(129,140,248,0.8), inset 0 0 3px rgba(129,140,248,0.5)'
+                            : '0 0 4px rgba(129,140,248,0.35)',
+                        }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                        <ScrollText className="w-2.5 h-2.5 text-indigo-300 relative z-10" style={{ filter: 'drop-shadow(0 0 3px currentColor)' }} />
+                      </div>
+                      <span>{language === 'es' ? 'Esc.' : 'School'}</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => onGroupByChange('origin')}
-                      className={`py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer text-center ${
+                      className={`py-1 px-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer flex items-center justify-center gap-1 ${
                         groupBy === 'origin'
-                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/35 shadow-xs'
+                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/50 shadow-[0_0_12px_rgba(186,250,253,0.35)]'
                           : 'text-[#8a9ba8] hover:text-slate-200'
                       }`}
                       title="Distribuir por Origen Cósmico"
                     >
-                      {language === 'es' ? 'Origen' : 'Origin'}
+                      <div
+                        className="w-3.5 h-3.5 rounded-full flex items-center justify-center border border-fuchsia-500/40 bg-[#090e12] ring-1 ring-white/15 shrink-0 relative overflow-hidden"
+                        style={{
+                          boxShadow: groupBy === 'origin'
+                            ? '0 0 10px rgba(232,121,249,0.8), inset 0 0 3px rgba(232,121,249,0.5)'
+                            : '0 0 4px rgba(232,121,249,0.35)',
+                        }}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                        <Sparkles className="w-2.5 h-2.5 text-fuchsia-300 relative z-10" style={{ filter: 'drop-shadow(0 0 3px currentColor)' }} />
+                      </div>
+                      <span>{language === 'es' ? 'Origen' : 'Origin'}</span>
                     </button>
                   </div>
                 </div>
@@ -448,7 +494,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                             className="flex items-center gap-2 flex-1 text-left cursor-pointer min-w-0"
                           >
                             <div
-                              className={`w-6 h-6 rounded-full flex items-center justify-center border p-0.5 overflow-hidden shrink-0 bg-[#090e12] ring-1 transition-all duration-300 ${
+                              className={`w-6 h-6 rounded-full flex items-center justify-center border p-0.5 overflow-hidden shrink-0 bg-[#090e12] ring-1 transition-all duration-300 relative ${
                                 isSelected
                                   ? 'ring-[#bafafd]/80 border-[#bafafd]'
                                   : 'ring-white/15'
@@ -456,11 +502,15 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                               style={{
                                 borderColor: isSelected ? undefined : p.color,
                                 boxShadow: isSelected
-                                  ? '0 0 12px rgba(186,250,253,0.6)'
-                                  : `0 0 8px ${p.accentGlow || 'rgba(255,255,255,0.25)'}`,
+                                  ? `0 0 16px ${p.accentGlow || 'rgba(186,250,253,0.8)'}, 0 0 6px ${p.accentGlow || 'rgba(186,250,253,0.95)'}, inset 0 0 4px ${p.accentGlow || 'rgba(186,250,253,0.5)'}`
+                                  : `0 0 8px ${p.accentGlow ? p.accentGlow.replace(/0\.\d+\)/, '0.45)') : 'rgba(255,255,255,0.35)'}, inset 0 0 2px rgba(255,255,255,0.2)`,
                               }}
                             >
-                              <IconComp className="w-full h-full object-contain rounded-full" />
+                              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                              <IconComp
+                                className="w-full h-full object-contain rounded-full relative z-10"
+                                style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 5px currentColor)' }}
+                              />
                             </div>
                             <span className={`truncate ${isSelected ? 'font-semibold text-[#bafafd]' : ''}`}>
                               {language === 'es' ? p.name : p.nameEn}
@@ -520,7 +570,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                             className="flex items-center gap-2 flex-1 text-left cursor-pointer min-w-0"
                           >
                             <div
-                              className={`w-6 h-6 rounded-full flex items-center justify-center border p-0.5 overflow-hidden shrink-0 bg-[#090e12] ring-1 transition-all duration-300 ${
+                              className={`w-6 h-6 rounded-full flex items-center justify-center border p-0.5 overflow-hidden shrink-0 bg-[#090e12] ring-1 transition-all duration-300 relative ${
                                 isSelected
                                   ? 'ring-[#bafafd]/80 border-[#bafafd]'
                                   : 'ring-white/15'
@@ -528,11 +578,15 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                               style={{
                                 borderColor: isSelected ? undefined : p.color,
                                 boxShadow: isSelected
-                                  ? '0 0 12px rgba(186,250,253,0.6)'
-                                  : `0 0 8px ${p.accentGlow || 'rgba(255,255,255,0.25)'}`,
+                                  ? `0 0 16px ${p.accentGlow || 'rgba(186,250,253,0.8)'}, 0 0 6px ${p.accentGlow || 'rgba(186,250,253,0.95)'}, inset 0 0 4px ${p.accentGlow || 'rgba(186,250,253,0.5)'}`
+                                  : `0 0 8px ${p.accentGlow ? p.accentGlow.replace(/0\.\d+\)/, '0.45)') : 'rgba(255,255,255,0.35)'}, inset 0 0 2px rgba(255,255,255,0.2)`,
                               }}
                             >
-                              <IconComp className="w-full h-full object-contain rounded-full" />
+                              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                              <IconComp
+                                className="w-full h-full object-contain rounded-full relative z-10"
+                                style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 5px currentColor)' }}
+                              />
                             </div>
                             <span className={`truncate ${isSelected ? 'font-semibold text-[#bafafd]' : ''}`}>
                               {language === 'es' ? p.name : p.nameEn}
@@ -621,9 +675,23 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                     >
                       <div className="flex items-center gap-2">
                         <div
-                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${schoolTheme.bgColor} ${schoolTheme.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/10`}
+                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${schoolTheme.bgColor} ${schoolTheme.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/15 relative`}
+                          style={{
+                            boxShadow: isSelected
+                              ? `0 0 16px ${schoolTheme.hexColor}, 0 0 6px ${schoolTheme.hexColor}, inset 0 0 4px ${schoolTheme.hexColor}`
+                              : `0 0 8px ${schoolTheme.hexColor}66, inset 0 0 2px rgba(255,255,255,0.2)`,
+                          }}
                         >
-                          <IconComponent className="w-full h-full object-contain rounded-full" />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                          {(() => {
+                            const VectorComp = schoolTheme.vectorIcon;
+                            return (
+                              <VectorComp
+                                className={`w-3.5 h-3.5 ${schoolTheme.textColor} relative z-10`}
+                                style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)' }}
+                              />
+                            );
+                          })()}
                         </div>
                         <span className={isSelected ? 'font-semibold text-[#bafafd]' : ''}>
                           {school}
@@ -679,7 +747,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                 {DAMAGE_TYPES.map((dt) => {
                   const activeDamageTypes = selectedDamageTypes || (selectedDamageType ? [selectedDamageType] : []);
                   const isSelected = activeDamageTypes.includes(dt.name);
-                  const DtIcon = dt.icon;
+                  const DtVector = dt.vectorIcon;
 
                   return (
                     <button
@@ -698,9 +766,18 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                     >
                       <div className="flex items-center gap-2">
                         <div
-                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${dt.bgColor} ${dt.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/10`}
+                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${dt.bgColor} ${dt.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/15 relative`}
+                          style={{
+                            boxShadow: isSelected
+                              ? `0 0 16px ${dt.accentGlow}, 0 0 6px ${dt.accentGlow}, inset 0 0 4px ${dt.accentGlow}`
+                              : `0 0 8px ${dt.accentGlow.replace(/0\.\d+\)/, '0.45)')}, inset 0 0 2px rgba(255,255,255,0.2)`,
+                          }}
                         >
-                          <DtIcon className="w-full h-full object-contain rounded-full" />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                          <DtVector
+                            className={`w-3.5 h-3.5 ${dt.textColor} relative z-10`}
+                            style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)' }}
+                          />
                         </div>
                         <span className={isSelected ? 'font-semibold text-[#bafafd]' : ''}>
                           {language === 'es' ? dt.name : dt.nameEn}
@@ -750,7 +827,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
               <div className="space-y-1">
                 {SPELL_FUNCTIONALITIES.map((fn) => {
                   const isSelected = selectedFunctionalities?.includes(fn.id);
-                  const FnIcon = fn.icon;
+                  const FnVector = fn.vectorIcon;
 
                   return (
                     <button
@@ -769,9 +846,18 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                     >
                       <div className="flex items-center gap-2">
                         <div
-                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${fn.bgColor} ${fn.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/10`}
+                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${fn.bgColor} ${fn.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/15 relative`}
+                          style={{
+                            boxShadow: isSelected
+                              ? `0 0 16px ${fn.accentGlow}, 0 0 6px ${fn.accentGlow}, inset 0 0 4px ${fn.accentGlow}`
+                              : `0 0 8px ${fn.accentGlow.replace(/0\.\d+\)/, '0.45)')}, inset 0 0 2px rgba(255,255,255,0.2)`,
+                          }}
                         >
-                          <FnIcon className="w-full h-full object-contain rounded-full" />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                          <FnVector
+                            className={`w-3.5 h-3.5 ${fn.textColor} relative z-10`}
+                            style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)' }}
+                          />
                         </div>
                         <span className={isSelected ? 'font-semibold text-[#bafafd]' : ''}>
                           {language === 'es' ? fn.name : fn.nameEn}
@@ -828,6 +914,20 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                   }`}
                 >
                   <div className="flex items-center gap-2">
+                    <div
+                      className="w-5.5 h-5.5 rounded-full flex items-center justify-center border border-[#1b2a33] bg-[#090e12] ring-1 ring-white/15 shrink-0 relative overflow-hidden"
+                      style={{
+                        boxShadow: !selectedTargets || selectedTargets.length === 0
+                          ? '0 0 14px rgba(186, 250, 253, 0.8), 0 0 5px rgba(186, 250, 253, 0.95), inset 0 0 4px rgba(186, 250, 253, 0.5)'
+                          : '0 0 7px rgba(186, 250, 253, 0.35)',
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                      <Target
+                        className="w-3.5 h-3.5 text-[#bafafd] relative z-10"
+                        style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)' }}
+                      />
+                    </div>
                     <span className={!selectedTargets || selectedTargets.length === 0 ? 'font-semibold text-[#bafafd]' : ''}>
                       {language === 'es' ? 'Todos los objetivos' : 'All targets'}
                     </span>
@@ -839,7 +939,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
 
                 {SPELL_TARGET_OPTIONS.map((tgt) => {
                   const isSelected = (selectedTargets || []).includes(tgt.id);
-                  const TgtIcon = tgt.icon;
+                  const TgtVector = tgt.vectorIcon;
 
                   return (
                     <button
@@ -858,9 +958,18 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                     >
                       <div className="flex items-center gap-2">
                         <div
-                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${tgt.bgColor} ${tgt.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/10`}
+                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${tgt.bgColor} ${tgt.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/15 relative`}
+                          style={{
+                            boxShadow: isSelected
+                              ? `0 0 16px ${tgt.accentGlow}, 0 0 6px ${tgt.accentGlow}, inset 0 0 4px ${tgt.accentGlow}`
+                              : `0 0 8px ${tgt.accentGlow.replace(/0\.\d+\)/, '0.45)')}, inset 0 0 2px rgba(255,255,255,0.2)`,
+                          }}
                         >
-                          <TgtIcon className="w-full h-full object-contain rounded-full" />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                          <TgtVector
+                            className={`w-3.5 h-3.5 ${tgt.textColor} relative z-10`}
+                            style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)' }}
+                          />
                         </div>
                         <span className={isSelected ? 'font-semibold text-[#bafafd]' : ''}>
                           {language === 'es' ? tgt.name : tgt.nameEn}
@@ -874,7 +983,7 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
             )}
           </div>
 
-          {/* Origen Section (Infernal, Celestial, Elemental, Feérica, Shadowfell, Onírico) */}
+          {/* Origen Section (Infernal, Celestial, Elemental, Feérica, Shadowfell, Onírico, Astral) */}
           <div className="pt-2 border-t border-[#172127]">
             <div className="flex items-center justify-between px-1 mb-2">
               <button
@@ -917,6 +1026,20 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                   }`}
                 >
                   <div className="flex items-center gap-2">
+                    <div
+                      className="w-5.5 h-5.5 rounded-full flex items-center justify-center border border-[#1b2a33] bg-[#090e12] ring-1 ring-white/15 shrink-0 relative overflow-hidden"
+                      style={{
+                        boxShadow: !selectedOrigins || selectedOrigins.length === 0
+                          ? '0 0 14px rgba(186, 250, 253, 0.8), 0 0 5px rgba(186, 250, 253, 0.95), inset 0 0 4px rgba(186, 250, 253, 0.5)'
+                          : '0 0 7px rgba(186, 250, 253, 0.35)',
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                      <Sparkles
+                        className="w-3.5 h-3.5 text-[#bafafd] relative z-10"
+                        style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)' }}
+                      />
+                    </div>
                     <span className={!selectedOrigins || selectedOrigins.length === 0 ? 'font-semibold text-[#bafafd]' : ''}>
                       {language === 'es' ? 'Todos los orígenes' : 'All origins'}
                     </span>
@@ -948,12 +1071,18 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
                     >
                       <div className="flex items-center gap-2">
                         <div
-                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${orig.bgColor} ${orig.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/10`}
+                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${orig.bgColor} ${orig.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/15 relative`}
                           style={{
-                            boxShadow: isSelected ? `0 0 8px ${orig.accentGlow}` : undefined,
+                            boxShadow: isSelected
+                              ? `0 0 16px ${orig.accentGlow}, 0 0 6px ${orig.accentGlow}, inset 0 0 4px ${orig.accentGlow}`
+                              : `0 0 8px ${orig.accentGlow.replace(/0\.\d+\)/, '0.45)')}, inset 0 0 2px rgba(255,255,255,0.2)`,
                           }}
                         >
-                          <OrigIcon className={`w-3.5 h-3.5 ${orig.textColor}`} />
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                          <OrigIcon
+                            className={`w-3.5 h-3.5 ${orig.textColor} relative z-10`}
+                            style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)' }}
+                          />
                         </div>
                         <span className={isSelected ? 'font-semibold text-[#bafafd]' : ''}>
                           {language === 'es' ? orig.name : orig.nameEn}
@@ -1000,26 +1129,46 @@ export const DragopediaSidebar: React.FC<DragopediaSidebarProps> = ({
             </div>
 
             {!collapsedSections.classes && (
-              <div className="flex flex-wrap gap-1">
-                {ALL_CLASSES.map((cls) => {
+              <div className="space-y-1">
+                {CLASS_OPTIONS.map((clsOpt) => {
                   const activeClasses = selectedClasses || (selectedClass ? [selectedClass] : []);
-                  const isSelected = activeClasses.includes(cls);
+                  const isSelected = activeClasses.includes(clsOpt.name);
+                  const ClsIcon = clsOpt.icon;
                   return (
                     <button
-                      key={cls}
+                      key={clsOpt.name}
                       type="button"
                       onClick={() => {
-                        onToggleClass(cls);
+                        onToggleClass(clsOpt.name);
                         if (currentTab !== 'catalog') onSelectTab('catalog');
                         onCloseMobile();
                       }}
-                      className={`px-2 py-1 rounded-md text-[11px] font-medium border transition-all cursor-pointer ${
+                      className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer ${
                         isSelected
-                          ? 'bg-[#14282e] text-[#bafafd] border border-[#bafafd]/40 shadow-xs'
-                          : 'bg-[#0e1419] text-[#8a9ba8] border-[#1b2832] hover:text-slate-200 hover:border-slate-600'
+                          ? 'bg-[#14282e] text-slate-100 border border-[#bafafd]/40'
+                          : 'text-[#8a9ba8] hover:text-slate-200 hover:bg-[#10171d]'
                       }`}
                     >
-                      {cls}
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={`w-5.5 h-5.5 rounded-full flex items-center justify-center border ${clsOpt.bgColor} ${clsOpt.borderColor} p-0.5 overflow-hidden shadow-xs shrink-0 bg-[#090e12] ring-1 ring-white/15 relative`}
+                          style={{
+                            boxShadow: isSelected
+                              ? `0 0 16px ${clsOpt.accentGlow}, 0 0 6px ${clsOpt.accentGlow}, inset 0 0 4px ${clsOpt.accentGlow}`
+                              : `0 0 8px ${clsOpt.accentGlow.replace(/0\.\d+\)/, '0.45)')}, inset 0 0 2px rgba(255,255,255,0.2)`,
+                          }}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-white/30 pointer-events-none rounded-full" />
+                          <ClsIcon
+                            className={`w-3.5 h-3.5 ${clsOpt.textColor} relative z-10`}
+                            style={{ filter: 'drop-shadow(0 0 3px currentColor) drop-shadow(0 0 6px currentColor)' }}
+                          />
+                        </div>
+                        <span className={isSelected ? 'font-semibold text-[#bafafd]' : ''}>
+                          {language === 'es' ? clsOpt.name : clsOpt.nameEn}
+                        </span>
+                      </div>
+                      {isSelected && <ChevronRight className="w-3.5 h-3.5 text-[#bafafd]" />}
                     </button>
                   );
                 })}

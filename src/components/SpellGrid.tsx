@@ -6,6 +6,7 @@ import { getSpellPrimordialMagic, PRIMORDIAL_MAGICS, PrimordialMagicInfo } from 
 import { ALL_SCHOOLS } from '../data/spells';
 import { getSchoolTheme } from '../data/schools';
 import { getSpellOrigin, SPELL_ORIGIN_OPTIONS } from '../data/spellOrigins';
+import { isOfficialBg3Spell } from '../data/bg3IconHelper';
 
 interface SpellGridProps {
   spells: Spell[];
@@ -292,12 +293,18 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
                   const isKnown = activeCharacter?.knownSpellIds.includes(spell.id) ?? false;
                   const isPrepared = activeCharacter?.preparedSpellIds.includes(spell.id) ?? false;
                   const isFav = activeCharacter?.favoriteSpellIds.includes(spell.id) ?? false;
+                  const isBg3 = isOfficialBg3Spell(spell);
 
                   return (
                     <div
                       key={spell.id}
-                      className="group relative flex flex-col items-center justify-between p-2.5 rounded-xl border border-[#192731] hover:border-[#bafafd]/50 bg-[#10181e] hover:bg-[#142129] transition-all cursor-pointer shadow-xs"
+                      className={`group relative flex flex-col items-center justify-between p-2.5 rounded-xl border transition-all duration-300 cursor-pointer shadow-xs ${
+                        !isBg3
+                          ? 'border-[#15222b] bg-[#0c1318]/90 hover:border-[#bafafd]/50 hover:bg-[#142129]'
+                          : 'border-[#192731] bg-[#10181e] hover:border-[#bafafd]/50 hover:bg-[#142129]'
+                      }`}
                       onClick={() => onOpenDetails(spell)}
+                      title={!isBg3 ? (language === 'es' ? 'D&D 5e (No oficial en Baldur\'s Gate 3)' : 'D&D 5e (Not in official Baldur\'s Gate 3)') : undefined}
                     >
                       {/* Top status badges */}
                       <div className="absolute top-2 right-2 z-20 flex items-center gap-1 opacity-90 group-hover:opacity-100 transition-opacity">
@@ -339,7 +346,9 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
                       )}
 
                       {/* Spell Icon Container */}
-                      <div className="relative mt-2 mb-1 p-1 rounded-xl bg-[#14232c] border border-[#213744] group-hover:border-[#bafafd]/50 transition-colors shadow-xs">
+                      <div className={`relative mt-2 mb-1 p-1 rounded-xl bg-[#14232c] border border-[#213744] group-hover:border-[#bafafd]/50 transition-all duration-300 shadow-xs ${
+                        !isBg3 ? 'filter blur-[0.6px] opacity-80 group-hover:blur-none group-hover:opacity-100' : ''
+                      }`}>
                         <SpellIcon spell={spell} size="md" />
 
                         {/* Corner Level / Cantrip tag */}
@@ -357,6 +366,13 @@ export const SpellGrid: React.FC<SpellGridProps> = ({
                           <p className="text-[10px] text-slate-400 italic truncate opacity-75 mt-0.5">
                             {spell.nameEn}
                           </p>
+                        )}
+                        {!isBg3 && (
+                          <div className="mt-1">
+                            <span className="inline-block text-[8px] uppercase tracking-wider px-1.5 py-0.2 rounded-sm bg-[#090f13]/90 text-slate-400 border border-slate-700/40 font-mono group-hover:text-slate-300 transition-colors">
+                              5e Expandido
+                            </span>
+                          </div>
                         )}
                       </div>
                     </div>

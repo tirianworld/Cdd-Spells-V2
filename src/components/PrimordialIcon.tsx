@@ -10,6 +10,7 @@ import { PrimordialMagic } from '../types';
 export interface PrimordialIconProps {
   className?: string;
   alt?: string;
+  style?: React.CSSProperties;
 }
 
 export const PRIMORDIAL_GLOW_COLORS: Record<PrimordialMagic, { primary: string; secondary: string }> = {
@@ -46,6 +47,7 @@ export const PRIMORDIAL_GLOW_COLORS: Record<PrimordialMagic, { primary: string; 
 export const NaturalMagicIcon: React.FC<PrimordialIconProps> = ({
   className = 'w-5 h-5',
   alt = 'Magia Natural',
+  style,
 }) => (
   <img
     src={naturalImg}
@@ -53,6 +55,7 @@ export const NaturalMagicIcon: React.FC<PrimordialIconProps> = ({
     referrerPolicy="no-referrer"
     style={{
       filter: 'brightness(1.55) contrast(1.25) drop-shadow(0 0 4px rgba(34,197,94,0.95)) drop-shadow(0 0 9px rgba(74,222,128,0.75))',
+      ...style,
     }}
     className={`inline-block object-contain rounded-full select-none pointer-events-none ${className}`}
   />
@@ -61,6 +64,7 @@ export const NaturalMagicIcon: React.FC<PrimordialIconProps> = ({
 export const WildMagicIcon: React.FC<PrimordialIconProps> = ({
   className = 'w-5 h-5',
   alt = 'Magia Salvaje',
+  style,
 }) => (
   <img
     src={salvajeImg}
@@ -68,6 +72,7 @@ export const WildMagicIcon: React.FC<PrimordialIconProps> = ({
     referrerPolicy="no-referrer"
     style={{
       filter: 'brightness(1.55) contrast(1.25) drop-shadow(0 0 4px rgba(6,182,212,0.95)) drop-shadow(0 0 9px rgba(34,211,238,0.65))',
+      ...style,
     }}
     className={`inline-block object-contain rounded-full select-none pointer-events-none ${className}`}
   />
@@ -76,6 +81,7 @@ export const WildMagicIcon: React.FC<PrimordialIconProps> = ({
 export const ArcaneMagicIcon: React.FC<PrimordialIconProps> = ({
   className = 'w-5 h-5',
   alt = 'Magia Arcana',
+  style,
 }) => (
   <img
     src={arcanaImg}
@@ -83,6 +89,7 @@ export const ArcaneMagicIcon: React.FC<PrimordialIconProps> = ({
     referrerPolicy="no-referrer"
     style={{
       filter: 'brightness(1.55) contrast(1.25) drop-shadow(0 0 4px rgba(59,130,246,0.95)) drop-shadow(0 0 9px rgba(96,165,250,0.65))',
+      ...style,
     }}
     className={`inline-block object-contain rounded-full select-none pointer-events-none ${className}`}
   />
@@ -91,6 +98,7 @@ export const ArcaneMagicIcon: React.FC<PrimordialIconProps> = ({
 export const DivineMagicIcon: React.FC<PrimordialIconProps> = ({
   className = 'w-5 h-5',
   alt = 'Magia Divina',
+  style,
 }) => (
   <img
     src={divinaImg}
@@ -98,6 +106,7 @@ export const DivineMagicIcon: React.FC<PrimordialIconProps> = ({
     referrerPolicy="no-referrer"
     style={{
       filter: 'brightness(1.55) contrast(1.25) drop-shadow(0 0 4px rgba(234,179,8,0.95)) drop-shadow(0 0 9px rgba(253,224,71,0.65))',
+      ...style,
     }}
     className={`inline-block object-contain rounded-full select-none pointer-events-none ${className}`}
   />
@@ -106,6 +115,7 @@ export const DivineMagicIcon: React.FC<PrimordialIconProps> = ({
 export const ExtraplanarMagicIcon: React.FC<PrimordialIconProps> = ({
   className = 'w-5 h-5',
   alt = 'Magia Extraplanar',
+  style,
 }) => (
   <img
     src={extraplanarImg}
@@ -113,6 +123,7 @@ export const ExtraplanarMagicIcon: React.FC<PrimordialIconProps> = ({
     referrerPolicy="no-referrer"
     style={{
       filter: 'brightness(1.55) contrast(1.25) drop-shadow(0 0 4px rgba(236,72,153,0.95)) drop-shadow(0 0 9px rgba(244,114,182,0.65))',
+      ...style,
     }}
     className={`inline-block object-contain rounded-full select-none pointer-events-none ${className}`}
   />
@@ -121,6 +132,7 @@ export const ExtraplanarMagicIcon: React.FC<PrimordialIconProps> = ({
 export const ProfaneMagicIcon: React.FC<PrimordialIconProps> = ({
   className = 'w-5 h-5',
   alt = 'Magia Profana',
+  style,
 }) => (
   <img
     src={profanaImg}
@@ -128,6 +140,7 @@ export const ProfaneMagicIcon: React.FC<PrimordialIconProps> = ({
     referrerPolicy="no-referrer"
     style={{
       filter: 'brightness(1.55) contrast(1.25) drop-shadow(0 0 4px rgba(168,85,247,0.95)) drop-shadow(0 0 9px rgba(192,132,252,0.65))',
+      ...style,
     }}
     className={`inline-block object-contain rounded-full select-none pointer-events-none ${className}`}
   />
@@ -136,11 +149,13 @@ export const ProfaneMagicIcon: React.FC<PrimordialIconProps> = ({
 export const AureaMagicIcon: React.FC<PrimordialIconProps> = ({
   className = 'w-5 h-5',
   alt = 'Magia Áurea',
+  style,
 }) => (
   <div
     title={alt}
     style={{
       filter: 'drop-shadow(0 0 4px rgba(250,204,21,0.95)) drop-shadow(0 0 9px rgba(234,179,8,0.75))',
+      ...style,
     }}
     className={`inline-flex items-center justify-center rounded-full bg-gradient-to-br from-amber-300 via-yellow-500 to-amber-700 p-0.5 select-none ${className}`}
   >

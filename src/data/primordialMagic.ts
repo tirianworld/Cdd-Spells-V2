@@ -25,7 +25,7 @@ export interface PrimordialMagicInfo {
   bgColor: string; // Tailwind class
   borderColor: string; // Tailwind class
   accentGlow: string;
-  icon: React.FC<{ className?: string; alt?: string }>;
+  icon: React.FC<{ className?: string; alt?: string; style?: React.CSSProperties }>;
   iconUrl?: string;
   // Dracopedia official canonical document fields
   canonicalId?: string;

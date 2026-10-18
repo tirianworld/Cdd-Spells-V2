@@ -6,6 +6,7 @@ import { getSpellDamageTypes, DAMAGE_TYPES } from '../data/damageTypes';
 import { getSpellTargets, SPELL_TARGET_OPTIONS } from '../data/spellTargets';
 import { getSpellFunctionalities, SPELL_FUNCTIONALITIES } from '../data/spellFunctionalities';
 import { getSpellOrigin, ORIGIN_MAP } from '../data/spellOrigins';
+import { isOfficialBg3Spell } from '../data/bg3IconHelper';
 import { SpellIcon } from './SpellIcon';
 import { MarkdownText } from './MarkdownText';
 
@@ -101,7 +102,9 @@ ${spell.higherLevels ? `\nA niveles superiores: ${spell.higherLevels}` : ''}`;
           </div>
 
           {/* Spell Art Icon */}
-          <div className="shrink-0 relative group">
+          <div className={`shrink-0 relative group ${
+            !isOfficialBg3Spell(spell) ? 'filter blur-[0.6px] hover:blur-none hover:opacity-100 opacity-90 transition-all duration-300' : ''
+          }`}>
             <SpellIcon spell={spell} size="lg" />
           </div>
 
@@ -116,7 +119,7 @@ ${spell.higherLevels ? `\nA niveles superiores: ${spell.higherLevels}` : ''}`;
               {spell.school}
             </p>
 
-            {/* Tags: Level, School, Ritual, Concentration */}
+            {/* Tags: Level, School, Ritual, Concentration, Official BG3 */}
             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-1.5 mt-2.5">
               <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-[#14282c] text-[#bafafd] border border-[#bafafd]/50">
                 {spell.level === 0 ? 'TRUCO' : `NIVEL ${spell.level}`}
@@ -132,6 +135,18 @@ ${spell.higherLevels ? `\nA niveles superiores: ${spell.higherLevels}` : ''}`;
               >
                 {spell.school}
               </span>
+
+              {/* Baldur's Gate 3 Official Status */}
+              {isOfficialBg3Spell(spell) ? (
+                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-emerald-950/40 text-emerald-300 border border-emerald-500/40 flex items-center gap-1 shadow-xs">
+                  <span>Oficial Baldur's Gate 3</span>
+                </span>
+              ) : (
+                <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-slate-900/80 text-slate-400 border border-slate-700/60 flex items-center gap-1.5 backdrop-blur-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+                  <span>D&D 5e (No oficial en BG3)</span>
+                </span>
+              )}
 
               {spell.ritual && (
                 <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-[#14282c] text-[#bafafd] border border-[#bafafd]/40">

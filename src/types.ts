@@ -61,9 +61,12 @@ export type DndClass =
   | 'Clérigo'
   | 'Druida'
   | 'Explorador'
+  | 'Guerrero'
   | 'Hechicero'
   | 'Mago'
-  | 'Paladín';
+  | 'Monje'
+  | 'Paladín'
+  | 'Pícaro';
 
 export interface SpellComponents {
   verbal: boolean;
@@ -166,4 +169,5 @@ export interface FilterState {
   onlySpellbook: boolean;
   onlyCustom?: boolean;
   onlyVanilla?: boolean;
+  onlyBg3Official?: boolean;
 }
