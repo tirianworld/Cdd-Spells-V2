@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { getOfficialSpellIconUrl, sanitizeBg3Url, isOfficialBg3Spell } from '../data/bg3IconHelper';
+import { getOfficialSpellIconUrl, sanitizeBg3Url } from '../data/bg3IconHelper';
 import { MagicSchool } from '../types';
 import { getSchoolTheme } from '../data/schools';
 import { getCachedImageUrl, resolveSpellImageUrl } from '../services/imageService';
@@ -51,13 +51,7 @@ export const SpellIcon: React.FC<SpellIconProps> = ({
       list.push(customCached);
     }
 
-    // 2. Official Baldur's Gate 3 static icon
-    const officialBg3 = getOfficialSpellIconUrl(spell);
-    if (officialBg3 && !list.includes(officialBg3)) {
-      list.push(officialBg3);
-    }
-
-    // 3. Fallback to spellbookdnd icon if available and different
+    // 2. Explicit spell.iconUrl (e.g. D&D line icon or custom selection)
     if (spell.iconUrl) {
       const dndUrl = spell.iconUrl.startsWith('http') || spell.iconUrl.startsWith('data:')
         ? spell.iconUrl
@@ -66,6 +60,12 @@ export const SpellIcon: React.FC<SpellIconProps> = ({
       if (!list.includes(sanitizedDnd)) {
         list.push(sanitizedDnd);
       }
+    }
+
+    // 3. Official Baldur's Gate 3 static icon
+    const officialBg3 = getOfficialSpellIconUrl(spell);
+    if (officialBg3 && !list.includes(officialBg3)) {
+      list.push(officialBg3);
     }
 
     return list;
@@ -115,28 +115,26 @@ export const SpellIcon: React.FC<SpellIconProps> = ({
   }[size];
 
   const SchoolIconComponent = schoolTheme.icon;
-  const isBg3 = isOfficialBg3Spell(spell);
-  const shouldBlur = !isBg3 && !disableBlur;
+
+  const isLineIcon = activeSrc ? isOfficialDndLineIcon(activeSrc, spell) : false;
 
   return (
     <div
       className={`relative flex items-center justify-center rounded-2xl overflow-hidden transition-all duration-300 group-hover:scale-105 ${sizeClasses} ${className}`}
       style={{
         boxShadow: showSchoolBorder
-          ? (shouldBlur
-              ? `0 0 10px -4px ${schoolColor}35, 0 2px 6px rgba(0,0,0,0.4)`
-              : `0 0 16px -4px ${schoolColor}55, 0 2px 8px rgba(0,0,0,0.5)`)
+          ? `0 0 16px -4px ${schoolColor}55, 0 2px 8px rgba(0,0,0,0.5)`
           : undefined,
         borderColor: schoolColor,
       }}
     >
       {/* Background radial glow matching school */}
       <div
-        className={`absolute inset-0 transition-opacity ${
-          shouldBlur ? 'opacity-15 group-hover:opacity-35' : 'opacity-25 group-hover:opacity-45'
-        }`}
+        className="absolute inset-0 transition-opacity opacity-30 group-hover:opacity-50"
         style={{
-          background: `radial-gradient(circle at center, ${schoolColor}88 0%, rgba(12,20,28,0.85) 75%)`,
+          background: isLineIcon
+            ? `radial-gradient(circle at center, ${schoolColor}66 0%, rgba(18,29,38,0.92) 75%)`
+            : `radial-gradient(circle at center, ${schoolColor}88 0%, rgba(12,20,28,0.85) 75%)`,
         }}
       />
 
@@ -155,9 +153,7 @@ export const SpellIcon: React.FC<SpellIconProps> = ({
             name={spell.name || 'Hechizo'}
             school={spell.school ? String(spell.school) : undefined}
             color={spell.color}
-            className={`relative z-10 w-full h-full transition-all duration-300 group-hover:scale-110 ${
-              shouldBlur ? 'filter blur-[0.75px] opacity-85 group-hover:blur-none group-hover:opacity-100' : ''
-            }`}
+            className="relative z-10 w-full h-full transition-all duration-300 group-hover:scale-110"
             onError={handleImageError}
           />
         ) : (
@@ -167,16 +163,12 @@ export const SpellIcon: React.FC<SpellIconProps> = ({
             loading="lazy"
             referrerPolicy="no-referrer"
             onError={handleImageError}
-            className={`relative z-10 w-full h-full object-contain filter drop-shadow-md select-none transition-all duration-300 group-hover:scale-110 ${
-              shouldBlur ? 'blur-[0.75px] opacity-85 group-hover:blur-none group-hover:opacity-100' : ''
-            }`}
+            className="relative z-10 w-full h-full object-contain filter drop-shadow-md select-none transition-all duration-300 group-hover:scale-110"
           />
         )
       ) : (
         /* Fallback: School Icon with specific vivid school color */
-        <div className={`relative z-10 flex flex-col items-center justify-center text-center p-2 transition-all duration-300 ${
-          shouldBlur ? 'filter blur-[0.75px] opacity-85 group-hover:blur-none group-hover:opacity-100' : ''
-        }`}>
+        <div className="relative z-10 flex flex-col items-center justify-center text-center p-2 transition-all duration-300">
           <SchoolIconComponent
             className="w-7 h-7 sm:w-8 sm:h-8 transition-transform group-hover:scale-110"
             style={{ color: schoolColor }}
